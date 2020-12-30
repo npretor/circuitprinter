@@ -1,6 +1,6 @@
 {
-    "kick": 0.65, 
-    "pause_start": 100,
-    "pause_end": 100,
-    "unkick": 0.65
+    "kick": 0.09, 
+    "pause_start": 20,
+    "pause_end": 20,
+    "unkick": 0.06
 }
