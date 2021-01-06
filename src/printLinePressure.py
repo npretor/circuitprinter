@@ -22,7 +22,7 @@ For pressure extrusion the order of operations for printing is:
 import time 
 import json
 import sys
-from DuetController import DuetController
+from devices.DuetController import DuetController
 import gpiozero
 
 
@@ -33,6 +33,15 @@ with open('machine_settings.json') as f:
 #  //- - - - - - - - - Load ink settings - - - - - - - - -// 
 with open('ink_settings.json') as f:
     ink_settings = json.load(f)
+
+#  //- - - - - - - - - Connect to hardware - - - - - - - - -// 
+duet = DuetController()
+duet.connect()
+print('connected to duet')
+
+pressure = gpiozero.DigitalOutputDevice(m_settings['pressure_pin'])
+print('connected to pressure on pin: {}'.format(m_settings['pressure_pin']))
+
 
 def printLine(startPoint=(50, 10), endPoint=(150, 50)):
     # Print line: Kick, Pause, Print line to end, Pause, Unkick
@@ -53,13 +62,6 @@ def printLine(startPoint=(50, 10), endPoint=(150, 50)):
     duet.send('G4 {}'.format(ink_settings['pause_end']))
 
 
-#  //- - - - - - - - - Connect to hardware - - - - - - - - -// 
-duet = DuetController()
-duet.connect()
-print('connected to duet')
-
-pressure = gpiozero.DigitalOutputDevice(m_settings['pressure_pin'])
-print('connected to pressure on pin: {}'.format(m_settings['pressure_pin']))
 
 #  //- - - - - - - - - Home - - - - - - - - -// 
 #duet.home()

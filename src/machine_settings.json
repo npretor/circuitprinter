@@ -2,6 +2,6 @@
     "tool": 2,
     "extruder_tip_offset": 65,
     "rapid_height": 3,
-    "tip_height": -1.3,
-    "pressure_pin": 12
+    "light_pin": 4,
+    "tip_height": -1.3
 }

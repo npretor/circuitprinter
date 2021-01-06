@@ -3,7 +3,7 @@ import sys
 from gpiozero import LED
 
 class pressureController:
-    def __init__(self, pin='12'):
+    def __init__(self, pin='4'):
         device = gpiozero.DigitalOutputDevice(pin)
         return device
 
