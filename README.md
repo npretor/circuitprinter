@@ -1,10 +1,6 @@
 # circuitprinter
 The goal of this project is to print additve multilayer circuits
 
-## Todo
-1. Get a motion server running 
-2. 
-
 
 # Bill of materials: 
 https://docs.google.com/spreadsheets/d/1qsuu0mqhYLWQeWLX05LpEEylz75LFKVL712LdSZb1z4/edit?usp=sharing
