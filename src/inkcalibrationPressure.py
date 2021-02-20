@@ -15,11 +15,11 @@ import gpiozero
 logging.basicConfig(level=logging.DEBUG)
 
 #  //- - - - - - - - - Load machine settings - - - - - - - - -// 
-with open('machine_settings.json') as f:
+with open('./config/machine_settings.json') as f:
     m_settings = json.load(f)
 
 #  //- - - - - - - - - Load ink settings - - - - - - - - -// 
-with open('ink_settings.json') as f:
+with open('./config/ink_settings.json') as f:
     ink_settings = json.load(f)
 
 
@@ -35,7 +35,7 @@ lights.on()
 
 def printLine(startPt=(50, 10), endPt=(150, 50), printSpeed=1000, eSpeed=50, kickDst=kick, unkickDst=unkick):
     logging.info('Printing a line: {} {}'.format(startPt, endPt))
-    # Move to location at rapid speed and height
+    # Move to start location at rapid speed and height
     duet.send('G0 X{} Y{} Z{} F5000'.format(startPt[0], startPt[1], m_settings['rapid_height']))
 
     # Drop down to print height 

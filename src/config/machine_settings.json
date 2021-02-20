@@ -1,0 +1,44 @@
+{
+    "tools": {
+        "Pneumatic extruder 1": {
+            "is_active": 1,
+            "last_offset:": {
+                "x": 0.0, 
+                "y": 0.0, 
+                "z": 0.0
+            }
+        },
+        "Pneumatic extruder 2": {
+            "is_active": 1,
+            "last_offset:": {
+                "x": 0.0, 
+                "y": 0.0, 
+                "z": 0.0
+            } 
+        },
+        "Stepper extruder 1": {
+            "is_active": 1,
+            "last_offset:": {
+                "x": 0.0, 
+                "y": 0.0, 
+                "z": 0.0
+            }
+        },                
+        "tool_camera": {
+            "is_active": 1,
+            "last_offset:": {
+                "x": 0.0, 
+                "y": 0.0, 
+                "z": 13.0
+            }
+        }
+    },
+    "z_cal_location": {
+        "x": 272.6,
+        "y": 173.1, 
+        "z": 5.0
+    },
+    "rapid_height": 3,
+    "light_control_pin": 4,
+    "tip_height": -1.3
+}

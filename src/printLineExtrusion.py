@@ -15,11 +15,11 @@ from DuetController import DuetController
 
 
 #  //- - - - - - - - - Load machine settings - - - - - - - - -// 
-with open('machine_settings.json') as f:
+with open('./config/machine_settings.json') as f:
     m_settings = json.load(f)
 
 #  //- - - - - - - - - Load ink settings - - - - - - - - -// 
-with open('ink_settings.json') as f:
+with open('./config/ink_settings.json') as f:
     ink_settings = json.load(f)
 
 def printLine(startPoint=(50, 10), endPoint=(150, 50)):

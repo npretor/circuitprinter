@@ -27,11 +27,11 @@ import gpiozero
 
 
 #  //- - - - - - - - - Load machine settings - - - - - - - - -// 
-with open('machine_settings.json') as f:
+with open('./config/machine_settings.json') as f:
     m_settings = json.load(f)
 
 #  //- - - - - - - - - Load ink settings - - - - - - - - -// 
-with open('ink_settings.json') as f:
+with open('./config/ink_settings.json') as f:
     ink_settings = json.load(f)
 
 #  //- - - - - - - - - Connect to hardware - - - - - - - - -// 
