@@ -1,0 +1,11 @@
+FILE_TYPE = MULTI_PHYS_TABLE;
+
+PART 'MSP430FR5969IRGZR'
+CLASS = IC
+{========================================================================================}
+:"MANUFACTURER_NAME", "MANUFACTURER_PART_NUMBER"= "PART_NUMBER", "JEDEC_TYPE", "PACK_TYPE", "MOUSER_PART_NUMBER", "MOUSER_PRICE/STOCK", "ARROW_PART_NUMBER", "ARROW_PRICE/STOCK", "DESCRIPTION", "DATASHEET", "HEIGHT";
+{========================================================================================}
+ "Texas Instruments", "MSP430FR5969IRGZR" (!) = "", "QFN50P700X700X100-49N-D", "Quad Flat No-Lead", "595-SP430FR5969IRGZR", "https://www.mouser.co.uk/ProductDetail/Texas-Instruments/MSP430FR5969IRGZR?qs=7z%252BmIopC6%2FJ%2FZ11pkpOmXA%3D%3D", "MSP430FR5969IRGZR", "https://www.arrow.com/en/products/msp430fr5969irgzr/texas-instruments", "MSP430FR5969 16 MHz Ultra-Low-Power Microcontroller featuring 64 KB FRAM, 2 KB SRAM, 40 IO", "http://www.ti.com/lit/gpn/msp430fr5969", "1 mm"
+END_PART
+
+END.

@@ -1,0 +1,9 @@
+Manufacturer=ABRACON
+PartNumber=ABS07AIG-32.768kHz-7-D-T
+PartCategory=Crystal or Oscillator
+PackageCategory=Other
+PinCount=2
+Version=1.2
+Released=2020-01-29 17:29:17
+Downloaded=2021-01-09 17:45:26
+3D=N

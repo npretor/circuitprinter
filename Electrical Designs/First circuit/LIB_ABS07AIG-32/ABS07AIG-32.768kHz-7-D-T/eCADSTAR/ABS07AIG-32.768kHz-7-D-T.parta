@@ -1,0 +1,68 @@
+(Japanese_coding: sjis)
+(function "ECS_631068"
+    (uver 1)
+    (cuser "SamacSys")
+    (uuser "SamacSys")
+    (ctime 2020-01-29-17:29:17)
+    (utime 2020-01-30-07:08:25)
+    (interface
+        (port "1" (symbPinId 1) (portType INOUT))
+        (port "2" (symbPinId 2) (portType INOUT))
+    )
+    (property "symbolName" "ABS07AIG-32_768kHz-7-D-T")
+)
+
+
+(pinAssign "ECS_631068"
+    (uver 1)
+    (cuser "SamacSys")
+    (uuser "SamacSys")
+    (ctime 2020-01-29-17:29:17)
+    (utime 2020-01-30-07:08:25)
+    (interface
+        (port "1" (symbPinId 1) (portName "1") (portType INOUT))
+        (port "2" (symbPinId 2) (portName "2") (portType INOUT))
+    )
+    (internal
+        (funcInst (functionRef "ECS_631068")
+                (port "1" (match "1"))
+                (port "2" (match "2"))
+        )
+    )
+    (property "usePowerBox" "No")
+    (property "symbolName" "ABS07AIG-32_768kHz-7-D-T")
+)
+
+
+(part "ABS07AIG-32_768kHz-7-D-T"
+    (uver 1)
+    (cuser "SamacSys")
+    (uuser "SamacSys")
+    (ctime 2020-01-29-17:29:17)
+    (utime 2020-01-30-07:08:25)
+    (packageRef "ABS07AIG-32_768kHz-7-D-T")
+    (pinAssignRef "ECS_631068")
+    (interface
+        (port "1" (symbPinId 1) (portName "1") (portType INOUT))
+        (port "2" (symbPinId 2) (portName "2") (portType INOUT))
+    )
+    (partClass UNDEF)
+    (useInSchema Y)
+    (useInLayout Y)
+    (inPartsList Y)
+    (partType NORMAL)
+    (placeRestriction FREE)
+    (property "enetNonSeries" "YES")
+    (property "refDesPrefix" "Y")
+    (property "description" "Crystals")
+    (property "Manufacturer_Name" "ABRACON")
+    (property "Manufacturer_Part_Number" "ABS07AIG-32.768kHz-7-D-T")
+    (property "Mouser_Part_Number" "815-S07AIG-32.7687DT")
+    (property "Mouser_Price/Stock" "https://www.mouser.co.uk/ProductDetail/ABRACON/ABS07AIG-32768kHz-7-D-T?qs=gG6m684uYP7sw1q84yRzfQ%3D%3D")
+    (property "Arrow_Part_Number" "ABS07AIG-32.768KHZ-7-D-T")
+    (property "Arrow_Price/Stock" "https://www.arrow.com/en/products/abs07aig-32.768khz-7-d-t/abracon")
+    (property "Datasheet_Link" "https://componentsearchengine.com/Datasheets/1/ABS07AIG-32.768kHz-7-D-T.pdf")
+    (property "compAreaTopHeight" 0.9)
+)
+
+

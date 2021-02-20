@@ -1,0 +1,13 @@
+(unit MM)
+
+(package "MSP430FR5969IRGZR"
+    (type UNDEF)
+    (uver 2)
+    (cuser "SamacSys")
+    (uuser "SamacSys")
+    (utime 2019-08-31-14:44:06)
+    (mountForm default
+        (footprintRef "QFN50P700X700X100-49N-D")
+        (spec "System")
+    )
+)

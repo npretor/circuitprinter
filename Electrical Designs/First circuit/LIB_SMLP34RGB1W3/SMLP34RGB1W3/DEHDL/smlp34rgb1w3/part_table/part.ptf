@@ -1,0 +1,11 @@
+FILE_TYPE = MULTI_PHYS_TABLE;
+
+PART 'SMLP34RGB1W3'
+CLASS = DISCRETE
+{========================================================================================}
+:"MANUFACTURER_NAME", "MANUFACTURER_PART_NUMBER"= "PART_NUMBER", "JEDEC_TYPE", "PACK_TYPE", "MOUSER_PART_NUMBER", "MOUSER_PRICE/STOCK", "ARROW_PART_NUMBER", "ARROW_PRICE/STOCK", "DESCRIPTION", "DATASHEET";
+{========================================================================================}
+ "ROHM Semiconductor", "SMLP34RGB1W3" (!) = "", "SMLP34RGB1W3", "Other", "755-SMLP34RGB1W3", "https://www.mouser.co.uk/ProductDetail/ROHM-Semiconductor/SMLP34RGB1W3?qs=DpiaxRhKrmcH6V2J1PdQzQ%3D%3D", "", "", "Standard LEDs - SMD 3 Color (RGB) 4-Terminal", "https://componentsearchengine.com/Datasheets/1/SMLP34RGB1W3.pdf"
+END_PART
+
+END.

@@ -1,0 +1,9 @@
+Manufacturer=Texas Instruments
+PartNumber=MSP430FR5969IRGZR
+PartCategory=Integrated Circuit
+PackageCategory=Quad Flat No-Lead
+PinCount=49
+Version=2.1
+Released=2019-02-28 04:46:07
+Downloaded=2021-01-09 17:41:33
+3D=Y

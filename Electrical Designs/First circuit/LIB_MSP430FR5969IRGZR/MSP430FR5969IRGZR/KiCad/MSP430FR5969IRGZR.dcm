@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP MSP430FR5969IRGZR
+D MSP430FR5969 16 MHz Ultra-Low-Power Microcontroller featuring 64 KB FRAM, 2 KB SRAM, 40 IO
+K
+F http://www.ti.com/lit/gpn/msp430fr5969
+$ENDCMP
+#
+#End Doc Library

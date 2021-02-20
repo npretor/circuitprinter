@@ -1,0 +1,103 @@
+;Proteus Design Interchange Format
+(PDIF
+ (vendor "SamacSys Limited")
+ (version 1 0)
+ (library
+  (part "SMLP34RGB1W3"
+   (description "Standard LEDs - SMD 3 Color (RGB) 4-Terminal")
+   (family "DIO")
+   (package "SMLP34RGB1W3")
+   (attribute "Datasheet Link" "https://componentsearchengine.com/Datasheets/1/SMLP34RGB1W3.pdf")
+   (attribute "Manufacturer_Name" "ROHM Semiconductor")
+   (attribute "Manufacturer_Part_Number" "SMLP34RGB1W3")
+   (attribute "Mouser Part Number" "755-SMLP34RGB1W3")
+   (attribute "Mouser Price/Stock" "https://www.mouser.co.uk/ProductDetail/ROHM-Semiconductor/SMLP34RGB1W3?qs=DpiaxRhKrmcH6V2J1PdQzQ%3D%3D")
+   (attribute "Arrow Part Number" "")
+   (attribute "Arrow Price/Stock" "")
+   (gate
+    (symbol "SMLP34RGB1W3")
+    (pin "COMMON_A" 1 PS)
+    (pin "K_R" 2 PS)
+    (pin "K_B" 3 PS)
+    (pin "K_G" 4 PS)
+   )
+  )
+  (symbol "SMLP34RGB1W3"
+   (units THOU)
+   (origin (pt 0 0))
+   (graphic
+    (stroke 10)
+    (path (pt 200 100) (pt 1100 100) (pt 1100 -200) (pt 200 -200) (pt 200 100) (closed))
+   )
+   (terminal
+    (body (symbol "PIN") (pt 1300 0) (rot 0) (mir X) (visible true))
+    (name (pt 230 0) (rot 0) (just MIDDLE LEFT) (visible true))
+    (number (pt 140 20) (rot 0) (just BOTTOM RIGHT) (visible true)))
+   (terminal
+    (body (symbol "PIN") (pt 1300 -100) (rot 0) (mir X) (visible true))
+    (name (pt 230 0) (rot 0) (just MIDDLE LEFT) (visible true))
+    (number (pt 140 20) (rot 0) (just BOTTOM RIGHT) (visible true)))
+   (terminal
+    (body (symbol "PIN") (pt 0 -100) (rot 0) (mir 0) (visible true))
+    (name (pt 230 0) (rot 0) (just MIDDLE LEFT) (visible true))
+    (number (pt 140 20) (rot 0) (just BOTTOM RIGHT) (visible true)))
+   (terminal
+    (body (symbol "PIN") (pt 0 0) (rot 0) (mir 0) (visible true))
+    (name (pt 230 0) (rot 0) (just MIDDLE LEFT) (visible true))
+    (number (pt 140 20) (rot 0) (just BOTTOM RIGHT) (visible true)))
+  )
+  (symbol "PIN"
+   (units THOU)
+   (origin (pt 0 0))
+   (graphic
+    (stroke 10)
+    (path (pt 0 0) (pt 200 0))))
+  (symbol "PINSHORT"
+   (units THOU)
+   (origin (pt 0 0))
+   (graphic
+    (stroke 10)
+    (path (pt 0 0) (pt 100 0))))
+  (package "SMLP34RGB1W3"
+   (units MM)
+   (layer TASM
+    (graphic
+     (stroke 0.2)
+     (path
+      (closed true)
+      (pt -0.5 0.5)
+      (pt 0.5 0.5)
+      (pt 0.5 -0.5)
+      (pt -0.5 -0.5)
+      (pt -0.5 0.5))))
+   (layer OCCA
+    (graphic
+     (stroke 0.1)
+     (path
+      (closed true)
+      (pt -1.15 1.15)
+      (pt 1.15 1.15)
+      (pt 1.15 -1.15)
+      (pt -1.15 -1.15)
+      (pt -1.15 1.15))))
+   (layer TSLK
+    (graphic
+     (stroke 0.1)
+     (path
+      (closed true)
+      (pt 0.9 0.5)
+      (arc (pt 0.900 0.500) (pt 0.850 0.400) (pt 0.950 0.500) (start 180.0) (sweep 90.0))
+      (pt 0.9 0.4)
+      (arc (pt 0.900 0.400) (pt 0.850 0.400) (pt 0.950 0.500) (start 180.0) (sweep -90.0))
+      (pt 0.9 0.5))))
+   (leg 1 (pt 0.425 0.425) (padstack 0))
+   (leg 2 (pt 0.425 -0.425) (padstack 0))
+   (leg 3 (pt -0.425 -0.425) (padstack 0))
+   (leg 4 (pt -0.425 0.425) (padstack 0))
+   (padstack 0
+    (plated false)
+    (pad (layer TCOP) (square 0.450))
+   )
+  )
+ )
+)

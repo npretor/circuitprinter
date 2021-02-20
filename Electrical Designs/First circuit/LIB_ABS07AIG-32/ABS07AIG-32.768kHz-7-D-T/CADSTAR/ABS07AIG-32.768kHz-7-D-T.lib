@@ -1,0 +1,17 @@
+.ABS07AIG-32.768kHz-7-D-T :1 ;Crystals
+ABS07AIG32768kHz7DT
+*STM Y
+*NGS
+*PLB 1="1" 2="2"
+*MXP 2
+*DFN ABS07AIG-32.768kHz-7-D-T
+~!Manufacturer_Name (ABRACON)
+~!Manufacturer_Part_Number (ABS07AIG-32.768kHz-7-D-T)
+~!Mouser Part Number (815-S07AIG-32.7687DT)
+~!Link Mouser Price/Stock (https://www.mouser.co.uk/ProductDetail/ABRACON/ABS07AIG-32768kHz-7-D-T?qs=gG6m684uYP7sw1q84yRzfQ%3D%3D)
+~!Arrow Part Number (ABS07AIG-32.768KHZ-7-D-T)
+~!Link Arrow Price/Stock (https://www.arrow.com/en/products/abs07aig-32.768khz-7-d-t/abracon)
+~!Link Datasheet (https://componentsearchengine.com/Datasheets/1/ABS07AIG-32.768kHz-7-D-T.pdf)
+~!Height (0.9mm)
+ABS07AIG-32.768kHz-7-D-T
+1.1!U 2.1!U 

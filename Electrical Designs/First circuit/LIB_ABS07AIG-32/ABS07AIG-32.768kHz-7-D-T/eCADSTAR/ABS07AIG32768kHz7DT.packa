@@ -1,0 +1,13 @@
+(unit MM)
+
+(package "ABS07AIG-32_768kHz-7-D-T"
+    (type UNDEF)
+    (uver 2)
+    (cuser "SamacSys")
+    (uuser "SamacSys")
+    (utime 2020-01-29-17:29:17)
+    (mountForm default
+        (footprintRef "ABS07AIG32768kHz7DT")
+        (spec "System")
+    )
+)

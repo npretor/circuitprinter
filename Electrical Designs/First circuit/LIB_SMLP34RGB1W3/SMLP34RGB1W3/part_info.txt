@@ -1,0 +1,9 @@
+Manufacturer=ROHM Semiconductor
+PartNumber=SMLP34RGB1W3
+PartCategory=LED
+PackageCategory=Other
+PinCount=4
+Version=1.1
+Released=2018-11-01 00:25:13
+Downloaded=2021-01-09 17:53:04
+3D=N

@@ -1,0 +1,17 @@
+.SMLP34RGB1W3 :1 ;Standard LEDs - SMD 3 Color (RGB) 4-Terminal
+SMLP34RGB1W3
+*STM LED
+*NGS
+*PLB 1="COMMON_A" 2="K_R" 3="K_B" 4="K_G"
+*MXP 4
+*DFN SMLP34RGB1W3
+~!Manufacturer_Name (ROHM Semiconductor)
+~!Manufacturer_Part_Number (SMLP34RGB1W3)
+~!Mouser Part Number (755-SMLP34RGB1W3)
+~!Link Mouser Price/Stock (https://www.mouser.co.uk/ProductDetail/ROHM-Semiconductor/SMLP34RGB1W3?qs=DpiaxRhKrmcH6V2J1PdQzQ%3D%3D)
+~!Arrow Part Number (-)
+~!Arrow Price/Stock (-)
+~!Link Datasheet (https://componentsearchengine.com/Datasheets/1/SMLP34RGB1W3.pdf)
+~!Height (-)
+SMLP34RGB1W3
+1.1!U 2.1!U 3.1!U 4.1!U 

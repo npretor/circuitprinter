@@ -1,0 +1,13 @@
+(unit MM)
+
+(package "SMLP34RGB1W3"
+    (type UNDEF)
+    (uver 2)
+    (cuser "SamacSys")
+    (uuser "SamacSys")
+    (utime 2019-12-18-16:15:28)
+    (mountForm default
+        (footprintRef "SMLP34RGB1W3")
+        (spec "System")
+    )
+)
