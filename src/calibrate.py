@@ -1,3 +1,8 @@
+""" 
+WHAT DID WE LEARN TODAY: We need a gui for the motion control, can't jump between serial control and web control
+"""
+
+
 import json 
 import time 
 import io
@@ -8,7 +13,8 @@ import subprocess
 import socketserver
 from threading import Condition
 from http import server
-from devices.DuetController import DuetController
+from hardware.DuetController import DuetController
+from hardware.LightController import LightController
 
 
 print('First verify that the machine has been homed and a syringe is mounted with a tip')
@@ -85,13 +91,21 @@ class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
     allow_reuse_address = True
     daemon_threads = True
 
+# - - - - - - - Initialize hardware - - - - - - - #
+motion = DuetController()
+motion.connect()
+#light = LightController()
+#light.on()
 
 # - - - - - - - Open machine config file - - - - - - - #
-with open('machine_settings.json') as f:
+with open('config/machine_settings.json') as f:
     m_settings = json.load(f)
 
+global cPos
+global t1Pos
+
 # - - - - - - - Camera calibration - - - - - - - #
-def cameraCalibration():
+def cameraCalibration_withServer():
     with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
         flag = 0
         output = StreamingOutput()
@@ -110,16 +124,73 @@ def cameraCalibration():
         print(' ################################################')
         print(' ####  Now move to the correct location #########')
         print(' ####  When at the location hit the s key #########')
-        while flag = 0: 
+        while flag == 0: 
             inp = input("Press s when ready to save location: ")
             print('You pressed: {}'.format(inp))
             if inp == 's':
                 flag = 1
-        
-
-    
+        print('Saving location now')
     return 1
 
-# - - - - - - - Tool calibration - - - - - - - #
+def parsePosition(): 
+    positionString = motion.get_absolute_position()
+    locations = positionString.split()
+    xPos = float(locations[0][2:])
+    yPos = float(locations[1][2:])
+    zPos = float(locations[2][2:])
+    #print('Current position:  {} {} {}'.format(xPos, yPos, zPos))
+    return [xPos, yPos, zPos]
 
-cameraCalibration()
+def cameraCalibration():
+    flag = 0
+    print('Go to http://localhost.8000 to view camera in one window')
+    print('Go to http://192.168.4.47 to view motion control in a second window')
+    motion.disconnect()
+    print(' ################################################')
+    print(' ####  Now move to the correct location #########')
+    print(' ####  When at the location hit the s key #######')
+    print(' ################################################')
+    while flag == 0: 
+        inp = input("Press s when ready to save location: ")
+        print('You pressed: {}'.format(inp))
+        if inp == 's':
+            flag = 1
+    print('Saving location now')   
+    motion.connect()
+    cPos = parsePosition()
+    return(cPos)
+    # G0 X267.9 Y72.3 Z14.0
+
+# - - - - - - - Tool calibration - - - - - - - #
+def toolCalibration(tool=1):
+    flag = 0
+    print('Picking up the tool')
+    motion.send('T{}'.format(tool-1))
+    motion.disconnect()
+    print(' ################################################')
+    print(' ####  Now move to the correct location #########')
+    print(' ####  When at the location hit the s key #######')
+    print(' ################################################')
+    while flag == 0: 
+        inp = input("Press s when ready to save location: ")
+        print('You pressed: {}'.format(inp))
+        if inp == 's':
+            flag = 1
+    motion.connect()
+    tPos = parsePosition()
+    return(tPos)
+
+
+
+cPos = cameraCalibration()
+print('Position: {} {} {}'.format(cPos[0], cPos[1], cPos[2]))
+time.sleep(2)
+
+t1Pos = toolCalibration(1)
+print('Position: {} {} {}'.format(t1Pos[0], t1Pos[1], t1Pos[2]))
+
+print('The camera is the zero point, so we will subtract from that')
+print('Tool 0 offset from camera: Z{} Z{} Z{}'.format(cPos[0]-t1Pos[0], cPos[1]-t1Pos[1], cPos[2]-t1Pos[2]))
+
+motion.disconnect()
+#light.off()

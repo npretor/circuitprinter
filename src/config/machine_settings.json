@@ -1,6 +1,7 @@
 {
     "tools": {
-        "Pneumatic extruder 1": {
+        "1": {
+            "name": "Pneumatic extruder 1",
             "is_active": 1,
             "last_offset:": {
                 "x": 0.0, 
@@ -8,7 +9,8 @@
                 "z": 0.0
             }
         },
-        "Pneumatic extruder 2": {
+        "2": {
+            "name": "Pneumatic extruder 2",            
             "is_active": 1,
             "last_offset:": {
                 "x": 0.0, 
@@ -16,7 +18,8 @@
                 "z": 0.0
             } 
         },
-        "Stepper extruder 1": {
+        "3": {
+            "name": "Stepper extruder 3",            
             "is_active": 1,
             "last_offset:": {
                 "x": 0.0, 
@@ -24,7 +27,8 @@
                 "z": 0.0
             }
         },                
-        "tool_camera": {
+        "0": {
+            "name": "camera",            
             "is_active": 1,
             "last_offset:": {
                 "x": 0.0, 
