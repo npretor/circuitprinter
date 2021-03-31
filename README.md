@@ -1,5 +1,5 @@
 # circuitprinter
-The goal of this project is to print additve multilayer circuits
+The goal of this project is to print additive multilayer circuits
 
 
 # Bill of materials: 
