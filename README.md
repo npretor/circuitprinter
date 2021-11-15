@@ -6,13 +6,12 @@ The goal of this project is to print additive multilayer circuits
 https://docs.google.com/spreadsheets/d/1qsuu0mqhYLWQeWLX05LpEEylz75LFKVL712LdSZb1z4/edit?usp=sharing
 
 
-
 # Software 
 ### Libraries used: 
 -  https://gpiozero.readthedocs.io/en/stable/api_output.html#digitaloutputdevice
 
 ### Duet3D IO control
-- Truly both the most exhaustive and unreadable documentation I've ever read, especially around which pins map to what
+- Truly at the same time the most exhaustive and the most unreadable documentation I've ever read, especially around which pins map to what
 - Let's use fan 7. Should be P27
 
 ``` 

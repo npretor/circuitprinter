@@ -19,7 +19,7 @@ with open('./config/machine_settings.json') as f:
     m_settings = json.load(f)
 
 #  //- - - - - - - - - Load ink settings - - - - - - - - -// 
-with open('./config/ink_settings.json') as f:
+with open('./config/inks.json') as f:
     ink_settings = json.load(f)
 
 
@@ -42,7 +42,7 @@ def printLine(startPt=(50, 10), endPt=(150, 50), printSpeed=1000, eSpeed=50, kic
     duet.send('G0 Z{} F500'.format(m_settings['tip_height']))
     
     # Print: Kick, Pause, Print line to end, Pause, Unkick
-    # Kick
+    # Pressure on
     duet.send('M106 P0 S1.0')
 
     # Pause (technically a dwell, units=milliseconds)
@@ -62,7 +62,7 @@ def printLine(startPt=(50, 10), endPt=(150, 50), printSpeed=1000, eSpeed=50, kic
 
 #  //- - - - - - - - - Load ink settings - - - - - - - - -// 
 duet.send('M302 P1')    # Allow cold extrudes
-duet.send('T0')         # Select tool 2
+duet.send('T1')         # Select tool 2
 time.sleep(2)           # Pause  
 
 #Start locations on the sheet: from 50,50 to 200, 200

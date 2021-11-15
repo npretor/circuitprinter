@@ -3,6 +3,7 @@
         "1": {
             "name": "Pneumatic extruder 1",
             "is_active": 1,
+            "control_pin": 12,
             "last_offset:": {
                 "x": 0.0, 
                 "y": 0.0, 
@@ -24,7 +25,7 @@
             "last_offset:": {
                 "x": 0.0, 
                 "y": 0.0, 
-                "z": 0.0
+                "z": -1.95
             }
         },                
         "0": {
@@ -42,7 +43,12 @@
         "y": 173.1, 
         "z": 5.0
     },
-    "rapid_height": 3,
+    "bed_origin": {
+        "x": 50.0,
+        "y": 50.0
+    },
+    "rapid_height": 3.0,
+    "rapid_speed": 5000,
     "light_control_pin": 4,
-    "tip_height": -1.3
+    "print_height": -1.95
 }

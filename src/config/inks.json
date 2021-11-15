@@ -1,0 +1,23 @@
+{
+    "electroninks EL-612": {
+        "kick": 0.09, 
+        "pause_start": 200,
+        "pause_end": 200,
+        "unkick": 0.06,
+        "extrusion_pressure_psi": 10.0        
+    }, 
+    "syraya tech fast UV": {
+        "kick": 0.09, 
+        "pause_start": 200,
+        "pause_end": 200,
+        "unkick": 0.06,
+        "extrusion_pressure_psi": 10.0        
+    },
+    "ACI FE3124": {
+        "kick": 0.09, 
+        "pause_start": 200,
+        "pause_end": 200,
+        "unkick": 0.06,
+        "extrusion_pressure_psi": 50.0
+    }
+}

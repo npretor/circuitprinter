@@ -11,13 +11,14 @@ motion = DuetController()
 motion.connect()
 leds = LightController()
 leds.on()
+time.sleep(1)
 
 #  //- - - - - - - - - Load machine settings - - - - - - - - -// 
 with open('./config/machine_settings.json') as f:
     m_settings = json.load(f)
 
 #  //- - - - - - - - - Load ink settings - - - - - - - - -// 
-with open('./config/ink_settings.json') as f:
+with open('./config/inks.json') as f:
     ink_settings = json.load(f) 
 
 def parsePosition(): 
@@ -33,7 +34,6 @@ def zCalibrationAuto(tool):
     # https://duet3d.dozuki.com/Wiki/Gcode#Section_M585_Probe_Tool
     # https://forum.duet3d.com/topic/8302/trying-to-understand-and-use-m585/2
     # https://forum.duet3d.com/topic/8116/setting-wcs-with-probe/4
-
     
     
     time.sleep(1)
@@ -66,6 +66,21 @@ def zCalibrationAuto(tool):
     motion.send('G0 Z10 F1000')                     # Lower bed to avoid collision
     motion.send('M574 Z1 S1 P{}')                   # CHECK
     return True
+
+def zCalibrationRPI(tool): 
+    motion.send('T{}'.format(tool))                 # Select tool 
+    time.sleep(5)
+
+    # Move to calibration location 
+    xloc = m_settings['z_cal_location']['x'] 
+    yloc = m_settings['z_cal_location']['y'] 
+    zloc = m_settings['z_cal_location']['z'] 
+    motion.send('G0 X{} Y{} Z{} F10000'.format(xloc, yloc, zloc)) 
+    time.sleep(2)
+
+    while probePinValue:
+        # Move down 
+        pass
 
 def zCalibrationManual(tool):
     # Move to calibration location 
