@@ -30,6 +30,7 @@ const { connect } = require('http2');
 const upload = multer({ dest: 'temp/' });
 const app = express()
 const port = 80
+// const { StreamCamera, Codec } = require('pi-camera-connect');
 
 
 /* - - - - - - - - - Setup - - - - - - - - - */
@@ -83,8 +84,11 @@ app.get('/simple_print', (req, res) => {
         ink_names
     });
 });
-app.post('/simple_print', (req, res) => {
+app.post('/simple_print', upload.single('uploaded_DXF'), (req, res, next) => {
+    //console.log("uploaded: ",req.file['uploaded_DXF'].originalname)
+    console.log(req.file, req.body)
     ink_names = ['Primary Conductive - ACI 3214', 'Primary Adhesive - ACI 3331']
+
     res.render('pages/print_status', {
         ink_names
     });
@@ -101,6 +105,10 @@ app.post('/registered_print', (req, res) => {
     res.render('pages/print_status', {
         ink_names
     });
+});
+
+app.get('show_artwork', (req, res) => {
+    res.render('pages/show_artwork')
 });
 
 app.get('/print_status', (req, res) => {
@@ -151,6 +159,23 @@ app.post('/tool_calibration', (req, res) => {
     });
 });
 
+//https://dev.to/abdisalan_js/how-to-code-a-video-streaming-server-using-nodejs-2o0
+app.get('/video', (req, res) => {
+    const streamCamera = new StreamCamera({
+        codec: Codec.H264,
+      });
+    const writeStream = fs.createWriteStream('video-stream.h264');
+    const videoStream = streamCamera.createStream();    
+    // videoStream.pipe(writeStream);
+    videoStream.pipe(res);
+    streamCamera.startCapture().then(() => {
+        setTimeout(() => streamCamera.stopCapture(), 5000);
+    });
+
+    res.render('pages/video', {
+        videoStream
+    });
+});
 
 // - - - - - - - Start server - - - - - - - //
 app.listen(port, () => {

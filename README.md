@@ -28,4 +28,3 @@ M106 P7 S1.0
 ``` 
 
 This works on Fan0, but not anything on the Duex board. Probably will kill the solenoid eventually
-

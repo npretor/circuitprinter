@@ -8,7 +8,7 @@
                 <!-- Project selection -->
                 <p></p> 
                 <p><b> Select a project and process to scan</b></p> 
-                <form action="/simple_print" method="POST" id="printSetupForm">
+                <form action="/simple_print" enctype="multipart/form-data" method="POST" >
                     <!-- CREATE A PROJECT -->
                     <!-- STILL IN PROGRESS -->
                     <div class="input-group mb-3">
@@ -26,8 +26,8 @@
                     </select>
                     <!-- DXF FILE TO PRINT-->
                     <div class="mb-3">
-                        <label for="formFile" class="form-label"> 1. Select template bitmap: </label>
-                        <input class="form-control" type="file" id="formFileImage">
+                        <label for="formFile" class="form-label"> 1. Select file to print(DXF) </label>
+                        <input type="file" class="form-control-file form-control" name="uploaded_DXF">
                     </div>
                     <hr>
                 <button type="submit" class="btn btn-success">Start print</button> 
