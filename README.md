@@ -1,5 +1,5 @@
 # circuitprinter
-The goal of this project is to print additive multilayer circuits
+The goal of this project is to print additive circuit traces on the E3D and Jubilee toolchanging 3D printers
 
 
 # Bill of materials: 
