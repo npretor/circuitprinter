@@ -1,0 +1,40 @@
+<%- include('../partials/header'); %>
+
+<!-- Main body --> 
+    <div class="container"> 
+        <div class="row"> 
+            <div class="col"></div> 
+            <div class="col-6">
+                <!-- Project selection -->
+                <p></p> 
+                <p><b> Select a project and process to scan</b></p> 
+                <form action="/simple_print" enctype="multipart/form-data" method="POST" >
+                    <!-- CREATE A PROJECT -->
+                    <!-- STILL IN PROGRESS -->
+                    <div class="input-group mb-3">
+                        <!-- PROJECT NAME -->
+                        <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-default">Project name</span> 
+                        </div> 
+                        <input type="text" name="sheetSerialNumber" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"> 
+                    </div>                         
+                    <!-- SELECT AN INK RECIPE -->
+                    <select class="form-select" name="selectedInk" id="selectedInk">
+                        <% for(var i = 0; i < ink_names.length; i++) { %>
+                            <option name="<%=ink_names[i]%>" > <%= ink_names[i] %> </option>
+                        <% } %>   
+                    </select>
+                    <!-- DXF FILE TO PRINT-->
+                    <div class="mb-3">
+                        <label for="formFile" class="form-label"> 1. Select file to print(DXF) </label>
+                        <input type="file" class="form-control-file form-control" name="uploaded_DXF">
+                    </div>
+                    <hr>
+                <button type="submit" class="btn btn-success">Start print</button> 
+            </form > 
+            </div> 
+            <div class="col"></div> 
+        </div> 
+        </div> 
+
+<%- include('../partials/footer'); %>

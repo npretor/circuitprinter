@@ -1,0 +1,24 @@
+{
+    "Header": {
+        "Comment": "All values are metric (mm)",
+        "CreationDate": "2019-12-23T03:24:02Z",
+        "GenerationSoftware": {
+            "Application": "EAGLE",
+            "Vendor": "Autodesk",
+            "Version": "9.5.1"
+        },
+        "Part": "Single"
+    },
+    "Overall": {
+        "BoardThickness": 1.64,
+        "LayerNumber": 4,
+        "Name": {
+            "ProjectId": "nRF52840_qfaa_var5"
+        },
+        "Owner": "Nathan Pretorius <npretor@g.clemson.edu>",
+        "Size": {
+            "X": 22.5,
+            "Y": 19.5
+        }
+    }
+}
