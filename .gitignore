@@ -2,6 +2,7 @@ a.py
 b.py
 c.py
 *.pyc
+.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
