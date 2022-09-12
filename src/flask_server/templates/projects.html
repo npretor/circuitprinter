@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Main body -->
+    <div class="container">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-6">
+                <p></p>
+                <div class="jumbotron">
+                    <h3>Select a project</h3>
+                    
+                    {% if projects|length < 1  %}
+                    <h4>There are no projects. Create one below!</h4>
+                    {% else %}
+                    <div class="list-group">
+                        {% for project in projects %}
+                            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">Project number: {{project.id}}</h5>
+                                <small>3 days ago</small>
+                                </div>
+                                <p class="mb-1">Project name: {{project.content}}</p>
+                                <small>(In progress)</small>
+
+                            </a>
+                            <a href="delete/{{project.id}}">Delete</a> 
+                            <a href="update/{{project.id}}">Update</a>
+                            <br>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+<!-- 
+                    <table>
+                
+                        {% if projects|length < 1  %}
+                        <h4>There are no projects. Create one below!</h4>
+                        {% else %}
+                        <table>
+                            <tr>
+                                <th>Project</th>
+                                <th>Actions</th>
+                            </tr>
+                    
+                            {% for project in projects %}
+                            <tr>
+                                <td>{{ project.content }}</td>
+                                <td>
+                                    <a href="delete/{{project.id}}">Delete</a> <br>
+                                    <a href="update/{{project.id}}">Update</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                        {% endif %}
+                    </table>
+-->
+                    <hr>
+                    <h4>Create a new project</h4>
+                    <form action="/projects" method="POST">
+                        <input type="text" name="content" id="content">
+                        <input type="submit" value="Add Project">
+                    </form>
+
+                </div>
+            </div> 
+            <div class="col"></div> 
+        </div> 
+        </div> 
+
+{% endblock %}
