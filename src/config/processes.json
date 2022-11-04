@@ -1,0 +1,10 @@
+{
+    "processes": {
+        "asdfasfasdfa": {
+            "file_path": "test_serpentine.dxf",
+            "process_type": "extrusion_print",
+            "ink_recipe": "electroninks EL-612",
+            "id": 0
+        }
+    }
+}

@@ -2,7 +2,7 @@
     "tools": {
         "1": {
             "name": "Pneumatic extruder 1",
-            "is_active": 1,
+            "is_loaded": 1,
             "control_pin": 12,
             "last_offset:": {
                 "x": 0.0, 
@@ -12,7 +12,7 @@
         },
         "2": {
             "name": "Pneumatic extruder 2",            
-            "is_active": 1,
+            "is_loaded": 1,
             "last_offset:": {
                 "x": 0.0, 
                 "y": 0.0, 
@@ -21,7 +21,7 @@
         },
         "3": {
             "name": "Stepper extruder 3",            
-            "is_active": 1,
+            "is_loaded": 1,
             "last_offset:": {
                 "x": 0.0, 
                 "y": 0.0, 
@@ -30,7 +30,7 @@
         },                
         "0": {
             "name": "camera",            
-            "is_active": 1,
+            "is_loaded": 1,
             "last_offset:": {
                 "x": 0.0, 
                 "y": 0.0, 
@@ -49,6 +49,8 @@
     },
     "rapid_height": 3.0,
     "rapid_speed": 5000,
-    "light_control_pin": 4,
-    "print_height": -1.95
+    "print_height": -1.95,
+    "tip_height": 0.050,
+    "units": "mm",
+    "light_control_pin": 4
 }

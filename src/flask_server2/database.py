@@ -1,3 +1,5 @@
+from app import db
+
 class Recipe(db.Model): 
     """
     A recipe contains: 
@@ -38,6 +40,11 @@ class Process(db.Model):
     __tablename__ = 'processes'
     name = db.Column(db.String(200))
     artwork_path = db.Column(db.String(500)) 
+    
+    def __init__(self, name, artwork_path):
+        self.name = name 
+        self.artwork_path = artwork_path
 
     def __repr__(self) -> str:
         return '<Process %r>' % self.name 
+

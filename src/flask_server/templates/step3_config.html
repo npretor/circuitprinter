@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Main body -->
+    <div class="container">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-6">
+                <p> </p> 
+                <h3>Configure material and process settings</h3> 
+                <form action="/step3_config" method="POST" id="set_config">
+
+                    <!-- PROCESS TYPE --> 
+                    <select class="form-select" name="process_recipe" id="process_recipe">
+                        {% for process_recipe in process_recipes %}
+                            <option name="{{process_recipe}}"> {{process_recipe}} </option>
+                        {% endfor %}
+                    </select> 
+
+                    <p></p> 
+
+                    <!-- TOOL TO USE --> 
+                    <select class="form-select" name="tool_number" id="tool_number">
+                        {% for tool_number in tool_numbers %}
+                            <option name="{{tool_number}}"> {{tool_number}} </option>
+                        {% endfor %}
+                    </select> 
+
+                    <p></p> 
+
+                    <!-- SELECT AN INK RECIPE -->
+                    <select class="form-select" name="selected_ink_recipe" id="selected_ink_recipe">
+                        {% for ink_recipe in ink_list %}
+                            <option name="{{ink_recipe}}" > {{ink_recipe}} </option>
+                        {% endfor %}
+                    </select> 
+                    <button type="submit" class="btn btn-success">Next</button> 
+                </form>
+                <p> </p> 
+                <a class="btn btn-primary" href="/step2_show_parsing" role="button">Previous</a>
+                <a class="btn btn-primary" href="/step4_run" role="button">Next</a>
+            </div> 
+            <div class="col"></div> 
+        </div> 
+        </div> 
+
+{% endblock %}

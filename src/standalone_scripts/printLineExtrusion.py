@@ -66,6 +66,4 @@ duet.send('G0 Z{}'.format(m_settings['rapid_height']))
 
 duet.send('T-1')
 
-duet.disconnect()
-
-
+duet.disconnect() 

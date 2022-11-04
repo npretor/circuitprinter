@@ -178,7 +178,6 @@ Select tool
 
 
 
-
 For each polyline: 
     a. Rapid to starting location on the PT0, at the rapid Z height 
     b. Drop down to the Z height 

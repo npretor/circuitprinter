@@ -6,14 +6,13 @@ import logging
 
 """
 
-#  = = = = = = =  Core  = = = = = = =  # 
+# = = = = = = =  Core  = = = = = = = # 
 
 class Printer:
     def __init__(self) -> None:
-        """
-        """
-        self.startup()
-        self.maxTools = 4
+        """ Startup """
+        self.startup() 
+        self.maxTools = 4 
 
         self.stateConfig = { 
             "tools" : {
@@ -32,7 +31,8 @@ class Printer:
                     "tool_type" : "camera",
                     "tool_offsets": [0,0,0]
                 }
-            }
+            },
+            "mounted_tool": 0
         }
        
     def addTool(self, tool_name, tool_type, tool_offsets):
@@ -53,7 +53,9 @@ class Printer:
     def startup(self, configuration):
         """
         Order of operations
-        
+        1. Load previous state 
+        2. Connect to motion home 
+        3. Apply necessary settings 
         """
         self.loadPreviousState(self.stateConfig)
 
@@ -71,76 +73,29 @@ class Printer:
         motion.send('M302 P1')    # Allow cold extrudes
 
         return True
-        
+
     def loadPreviousState(self, stateConfigPath):
         pass
 
     def connectToHardware(self):
         return True
 
-class ExtrusionProcess(Printer):
+class ExtrusionProcess:
     """
     TODO: Make the process steps iterables 
     TODO: Make extrusion derivative of a higher class
+    This creates the code to run the process, but does not actually run it. That is the printer's job
     """
     def __init__(self, file_path, file_type, tool, process_settings) -> None:
         self.file_path = file_path
         self.file_type = file_type 
         self.tool = tool
-        self.process_settings = process_settings
+        self.process_settings = process_settings 
         self.motion = None
 
         self.ink_settings = None
+        self.machine_settings = None
 
-    def run(self):
-        surface_path = self.parseDesign(self.file_path, self.file_type) 
-        machine_code = self.createMachineCode(surface_path, self.tool, self.process_settings) 
-        self.runProcess(machine_code)
-
-    def parseDesign(self, filePath, fileType):
-        """
-        Parse the file, return the path on a surface 
-        """
-        
-        surfacePath = [  ]
-        return surfacePath 
-    
-    def createMachineCode(self, surface_path, tool, process_settings, ink_settings):
-        """
-        Returns a list containing lines of machine code 
-        """
-        machine_code = []
-
-        for line in surface_path:
-            # Extrude
-            motion.send('G0 E{}'.format(ink_settings['kick']))
-
-            # Pause (technically a dwell, units=milliseconds)
-            motion.send('G4 {}'.format(ink_settings['pause_start']))
-
-            # Move to print trace 
-            motion.send('G0 X{} Y{} F{}'.format( 100, 200,  200))
-
-            # Pause (technically a dwell, units=milliseconds)
-            motion.send('G4 {}'.format(ink_settings['pause_end']))
-
-            # Retract
-            motion.send('G0 E{}'.format(ink_settings['unkick']))
-
-
-        return machine_code 
-
-    def runProcess(self, machine_code):
-        # Set status: ["idle", "paused", "stop"] 
-        # For line in code
-        return True
-
-    def saveProcess(self):
-        """
-        Save the machine code, artwork, and settings
-        """
-        return True 
-    
     def loadSettings(self):
         # Load machine settings 
         try:
@@ -159,51 +114,99 @@ class ExtrusionProcess(Printer):
             return False
         return True
 
+    def run(self):
+        surface_path = self.parseDesign(self.file_path, self.file_type) 
+        machine_code = self.createMachineCode(surface_path, self.tool, self.process_settings) 
+        self.runProcess(machine_code) 
+        # while running, update the percent of lines parsed 
+
+    def parseDesign(self, filePath, fileType):
+        """
+        Parse the file, return the path on a surface 
+        """
+        
+        surfacePath = [  ]
+        return surfacePath 
+    
+    def createMachineCode(self, surface_path, tool_number, process_settings, ink_settings):
+        """
+        Returns a list of strings which are lines of machine code 
+        """
+        machine_code = []
+        motion.send('T{}'.format(tool_number))
+        for line in surface_path:
+            # Extrude
+            motion.send('G0 E{}'.format(ink_settings['kick']))
+
+            # Pause (technically a dwell, units=milliseconds)
+            motion.send('G4 {}'.format(ink_settings['pause_start']))
+
+            # Move to print trace 
+            motion.send('G0 X{} Y{} F{}'.format( 100, 200,  200))
+
+            # Pause (technically a dwell, units=milliseconds)
+            motion.send('G4 {}'.format(ink_settings['pause_end']))
+
+            # Retract
+            motion.send('G0 E{}'.format(ink_settings['unkick']))
+
+        motion.send('T-1')
+        return machine_code 
+
+    def runProcess(self, machine_code):
+        # Set status: ["idle", "paused", "stop"] 
+        # For line in code
+        return True 
+
+    def saveProcess(self):
+        """
+        Save the machine code, artwork, and settings to a file
+        """
+        return True 
 
 
-#  = = = = = = =  Tools  = = = = = = =  # 
-
+# = = = = = = =  Tools  = = = = = = = # 
 class Project:
     def __init__(self) -> None:
-        pass
+        pass 
 
 class ProcessStep:
     def __init__(self) -> None:
         self.process_types = ["extrusion", "pick and place", "point cure", "bed cure"] 
         self.process_step_artwork = None
-        self.toolRecipe = None
+        self.toolRecipe = None 
 
 class Tool:
     def __init__(self) -> None:
-        pass
+        pass 
 
 class CurrentHardware:
     def __init__(self) -> None:
-        pass
+        pass 
 
 
-#  = = = = = = =  Tools  = = = = = = =  # 
+
+#  = = = = = = =  Future Tools  = = = = = = =  # 
 class BedHeater:
     def __init__(self) -> None:
-        pass
+        pass 
 
 class UVCureHead:
     def __init__(self) -> None:
-        pass
+        pass 
 
 class FirmwareFlasher:
     def __init__(self) -> None:
-        pass
+        pass 
 
 class SilverExtruder:
     def __init__(self) -> None:
-        pass
+        pass 
 
 class PickAndPlace:
     def __init__(self) -> None:
-        pass
+        pass 
 
 class Camera:
     def __init__(self) -> None:
         self.available_tools = None 
-
