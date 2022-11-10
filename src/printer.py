@@ -2,52 +2,58 @@ import json
 import logging
 import os
 from platform import machine 
-#from hardware.DuetController import DuetController
-from dxfParser import dxf_to_list
+from hardware.DuetController import DuetController
+from ArtworkParser import ArtworkParser
 
 class Printer:
     def __init__(self):
         self.motion = None
+        self.vectorArtwork = None
+        self.machineCode = None
 
+    # = = = = = = = = Motion related functions = = = = = = = = #
     def startup(self):
         # connect to motion system
         self.connect() 
         self.home() 
         self.hardwareSpecificSetup() 
         return True
-    
     def connect(self):
         self.motion = DuetController() 
         try:
             self.motion.connect() 
         except: 
-            return False
-
+            return False 
     def home(self):
         self.motion.home()
+    # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+
 
     def hardwareSpecificSetup(self):
         # Run machine-specific startup commands
         self.motion.send('M302 P1')    # Allow cold extrudes
 
 
-    def parseDesign(self, filePath, fileType='dxf'):
+    def parseDesign(self, filePath):
         """ Parse the file, return the path on a surface """
-        #fileType = os.path.join(filePath).split(os.sep)[-1].split('.')[-1]
-        if fileType == 'dxf':
-            surfacePath = []
-            #surfacePath = dxf_to_list(filePath)
-            return surfacePath 
-        else:
-            return False
 
-    def createMachineCode(self, surface_path, tool_number, process_recipe, ink_settings):
+        #fileType = os.path.join(filePath).split(os.sep)[-1].split('.')[-1]
+
+        if filePath.endswith('.dxf'):
+            p = ArtworkParser()
+            self.vectorArtwork = p.read(filePath)
+            return self.vectorArtwork 
+        else:
+            print("File type not supported") 
+
+
+    def createMachineCode(self, tool_number, process_recipe, ink_settings):
         """
         Returns a list of strings which are lines of machine code 
         """
         machine_code = []
         machine_code.append('T{}'.format(tool_number))
-        for line in surface_path:
+        for line in self.vectorArtwork: 
             # Extrude
             machine_code.append('G0 E{}'.format(ink_settings['kick']))
 
@@ -65,6 +71,7 @@ class Printer:
 
         machine_code.append('T-1')
         return machine_code 
+
 
     def validateMachineCode(self, machine_code):
         vm = self.virtualMotion()
@@ -85,9 +92,11 @@ class Printer:
 
         return True 
 
+
     def runProcess(self):
         return True 
     
+
     def compileMachineCode(self, filepath, process_settings, ink_settings):
         line_list = self.parseDesign(filepath)
         gcode_list = self.createMachineCode(line_list, 0, process_settings, ink_settings) 

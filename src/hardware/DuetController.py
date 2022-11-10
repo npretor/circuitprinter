@@ -1,5 +1,3 @@
-# This class is for for testing the intern code on my printer setup(Nathan Pretorius)
-
 import os 
 import sys
 import time
