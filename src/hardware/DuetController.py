@@ -53,6 +53,12 @@ class DuetController:
         line = self.send('M114')
         return line
 
+    def parsePosition(self, line):
+        res = line.split(' ') 
+        locations = [float(item[2:]) for item in res] 
+        print("locations: ", locations)
+        return locations
+
     # perform homing action
     def home(self):
         line = self.send('G28')
@@ -60,6 +66,18 @@ class DuetController:
 
     def homeXY(self):
         line = self.send('G28 XY')
+        return line
+
+    def setRel(self):
+        line = self.send("G91")
+
+    def setAbs(self):
+        line = self.send("G90")        
+
+    def moveRel(self, direction, speed=1000):
+        self.setRel()
+        line = self.send('G0 X{}  Y{}  Z{}  F{}'.format(direction[0], direction[1], direction[2], speed))
+        self.setAbs()
         return line
 
     def disconnect(self):
