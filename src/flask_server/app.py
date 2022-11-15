@@ -12,6 +12,7 @@ import json
 import threading
 from printer import Printer
 from hardware.testController import TestController
+from hardware.DuetController import DuetController
 
 app = Flask(__name__)
 
@@ -29,7 +30,6 @@ printer = Printer()
 def home():
     if request.method == "POST":
         print("homing")
-        print(request.form)
         return redirect("/")
     else:
         return render_template('home.html')
@@ -118,7 +118,8 @@ def startup_system():
     else:    
         # Home the system
         print("Homing motion system")
-        motion = TestController()
+        #motion = TestController()
+        motion = DuetController()
         motion.home()
         print("System ready")
         return redirect('/') 
