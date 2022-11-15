@@ -25,6 +25,7 @@ def startup_options():
 startup_options()
 
 printer = Printer()
+motion = DuetController()
 
 @app.route("/", methods={"GET", "POST"}) 
 def home():
@@ -134,7 +135,27 @@ def settings():
 @app.route("/calibrate", methods={"GET", "POST"}) 
 def calibrate():
     if request.method == "POST":
-        pass
+        # Verify we are connected first
+        print(request.form)
+        if "x_value" in request.form:
+            print("moving x axis: ", request.form["x_value"])
+            motion.moveRel([request.form["x_value"], 0, 0]) 
+        elif "y_value" in request.form:
+            print("moving y axis: ", request.form["y_value"])
+            motion.moveRel([0, request.form["y_value"], 0])
+        elif "z_value" in request.form:
+            print("moving z axis: ", request.form["z_value"])       
+            motion.moveRel([0, 0, request.form["z_value"]]) 
+        elif "saveLocation" in request.form:
+            print("Saving location: ", motion.get_absolute_position())
+            line = motion.get_absolute_position()
+            res = line.split(' ')[0:5] 
+            locations = [item[2:] for item in res] 
+            print("locations: ", locations)            
+            print("saving XYZ: ".format(locations[0], locations[1], locations[2]))
+        else:
+            print("Error, unknown motion request")
+        return render_template('calibrate.html') 
     else:
         return render_template('calibrate.html') 
 
