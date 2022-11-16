@@ -125,6 +125,10 @@ def startup_system():
         print("System ready")
         return redirect('/') 
 
+@app.route("/show_artwork", methods={"GET", "POST"})
+def show_artwork():
+    return render_template("show_artwork.html")
+
 @app.route("/settings", methods={"GET", "POST"}) 
 def settings():
     if request.method == "POST":
@@ -158,6 +162,8 @@ def calibrate():
         return render_template('calibrate.html') 
     else:
         return render_template('calibrate.html') 
+
+
 
 
 if __name__ == "__main__":
