@@ -153,11 +153,14 @@ def startup_system():
         # Home the system
         print("Homing motion system")
         #motion = TestController()
-        
-        motion.connect()
+        motion = DuetController()
         motion.home()
         print("System ready")
         return redirect('/') 
+
+@app.route("/show_artwork", methods={"GET", "POST"})
+def show_artwork():
+    return render_template("show_artwork.html")
 
 @app.route("/settings", methods={"GET", "POST"}) 
 def settings():
