@@ -14,8 +14,13 @@ from printer import Printer
 from hardware.testController import TestController
 from hardware.DuetController import DuetController
 
-app = Flask(__name__)
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import declarative_base
+from sqlalchemy import Column, Integer, String, DateTime, Text, Float
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy_json import mutable_json_type
 
+app = Flask(__name__)
 
 
 def startup_options():
@@ -24,6 +29,33 @@ def startup_options():
     return True
 #startup_options()
 
+
+# - - - - Database startup - - - - - # 
+# host='localhost'
+# user='root'
+# passwd='new_password'
+# database='ORMDB'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://'+user+':'+passwd+'@'+host+'/'+database
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+
+db = SQLAlchemy(app)
+
+class Ink(db.Model):
+    """
+
+    """
+    __tablename__ = 'ink'
+    id = db.Column(db.Integer, primary_key=True) 
+    name = db.Column(db.String(100)) 
+    json_data = db.Text()
+    
+# with app.app_context():
+#     db.create_all()
+
+
+# - - - - hardware startup - - - - - # 
 printer = Printer()
 motion = DuetController()
 
