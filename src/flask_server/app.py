@@ -115,7 +115,7 @@ def step3_config():
         # TODO: Get ink recipe to pass to 
         # Ink recipes
         with open('../config/inks.json','r') as f:
-            ink_data = json.load(f)
+            ink_data = json.load(f) 
         
         printer.createMachineCode(tool_number, process_recipes[process_recipe_name], ink_data[ink_recipe_name])
 
