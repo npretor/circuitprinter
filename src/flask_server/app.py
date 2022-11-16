@@ -20,14 +20,18 @@ from sqlalchemy import Column, Integer, String, DateTime, Text, Float
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy_json import mutable_json_type
 
+<<<<<<< HEAD
 app = Flask(__name__)
 
+=======
+motion = None
+>>>>>>> 985a63beb1465ddb2f2323c673010618322a0f9d
 
 def startup_options():
     # Connect to motion system, test or real
     motion = TestController()
     return True
-#startup_options()
+startup_options()
 
 
 # - - - - Database startup - - - - - # 
@@ -63,7 +67,6 @@ motion = DuetController()
 def home():
     if request.method == "POST":
         print("homing")
-        print(request.form)
         return redirect("/")
     else:
         return render_template('home.html')
@@ -195,6 +198,8 @@ def calibrate():
         return render_template('calibrate.html') 
     else:
         return render_template('calibrate.html') 
+
+
 
 
 if __name__ == "__main__":
