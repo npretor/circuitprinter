@@ -11,14 +11,34 @@ https://docs.google.com/spreadsheets/d/1qsuu0mqhYLWQeWLX05LpEEylz75LFKVL712LdSZb
 * Json database for now, especially when defining and fleshing things out
 
 
-## 1. Startup 
+## Flask app Development setup
+
+### 1. Install dependencies
+* pip3 install -r requirements.txt 
+* pip3 install mysqlclient
+* brew install mysql 
+* brew services start mysql 
+
+
+### 2. Install workbench
+- create schema -> circuitprinter
+
+### 3. Initialise Tables
+- python refreshdb.py
+
+### 4. Start app
+- python app.py
+
+## Setup process
+
+### 1. Startup 
 1. Load previous configuration 
 2. Home axes 
-## 2. Processing 
+### 2. Processing 
 - Parse file 
 - Convert to machine code 
 - Run machine code 
-## 3. Go
+### 3. Go
 - Select project and go 
 
 

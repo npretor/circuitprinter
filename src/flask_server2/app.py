@@ -27,7 +27,7 @@ Machine specific settings
 app = Flask(__name__)
 
 #  - - - - - - - Database Config and Initialization- - - - - - - # 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@127.0.0.1:3306/circuitprinter'
 db = SQLAlchemy(app)
 
 #Base = declarative_base()
