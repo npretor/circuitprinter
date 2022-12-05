@@ -1,6 +1,50 @@
-from app import db
+from flask import Flask, request, render_template, jsonify, redirect
+from flask.views import View, MethodView
+from flask_sqlalchemy import SQLAlchemy
 
-class Recipe(db.Model): 
+#  - - - - - - - Defaults - - - - - - - #
+""" 
+Machine specific settings
+    By default the machine should load from the settings to determine the machine state. 
+    The inputs are only to change if needed on startup. 
+    It should check if ./temp/settings.json exists
+    If not it should create it with default settings. 
+    This should not be sent to gitlab, only stored locally 
+"""
+
+app = Flask(__name__)
+
+#  - - - - - - - Database Config and Initialization- - - - - - - #
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@127.0.0.1:3306/circuitprinter'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+db = SQLAlchemy(app)
+
+
+# Base = declarative_base()
+
+
+class Project(db.Model):
+    """
+    A project contains:
+        (string) name,
+        (list) sequential instances of Process
+    """
+    # __tablename__ = 'projects'
+    name = db.Column(db.String(100))
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(300), nullable=False)
+
+    # slug = db.Column(db.String(100))
+
+    # def __init__(self, name):
+    #     self.name = name
+    #     self.slug = '-'.join(name.split()).lower()
+
+    def __rep__(self):
+        return '<Project %r>' % self.name
+
+
+class Recipe(db.Model):
     """
     A recipe contains: 
         (string) process_type
@@ -9,12 +53,13 @@ class Recipe(db.Model):
             off_delay
             retract_height 
     """
-    __tablename__ = 'recipes'
-    name = db.Column(db.String(100)) 
+    name = db.Column(db.String(100))
+    id = db.Column(db.Integer, primary_key=True)
     process_types = ['extrusion_silver_print', 'adhesive_dispense', 'cure','pick_and_place', 'inspect'] 
 
     def __repr__(self) -> str:
         return '<Recipe %r>' % self.name 
+
 
 class Tool(db.Model):
     """
@@ -22,11 +67,12 @@ class Tool(db.Model):
         (string) name: name of the tool 
         (class) actions: possible actions the tool can take 
     """
-    __tablename__ = 'tools'
-    name = db.Column(db.String(200)) 
+    name = db.Column(db.String(200))
+    id = db.Column(db.Integer, primary_key=True)
 
     def __repr__(self) -> str:
         return '<Tool %r>' % self.name 
+
 
 class Process(db.Model):
     """
@@ -37,8 +83,8 @@ class Process(db.Model):
         (string) artwork_path: path to unparsed artwork file, dxf, gerber, etc 
         (list) artwork: 
     """
-    __tablename__ = 'processes'
     name = db.Column(db.String(200))
+    id = db.Column(db.Integer, primary_key=True)
     artwork_path = db.Column(db.String(500)) 
     
     def __init__(self, name, artwork_path):
