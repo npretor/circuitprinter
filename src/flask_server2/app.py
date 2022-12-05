@@ -30,8 +30,9 @@ def startup():
 def projects():
     # = = = = = = = Create = = = = = = = #
     if request.method == "POST":
-        project_content = request.form['content'] 
-        new_project = Project(content=project_content) 
+        content = request.form['content']
+        settings = request.form['settings']
+        new_project = Project(content=content, settings=json.loads(settings))
 
         try: 
             db.session.add(new_project) 
@@ -64,6 +65,7 @@ def update(project_id):
 
     if request.method == 'POST':
         project.content = request.form['content']
+        project.settings = json.loads(request.form['settings'] or {})
 
         try:
             db.session.commit()
