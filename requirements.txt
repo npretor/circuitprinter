@@ -14,5 +14,5 @@ Werkzeug==2.2.2
 zipp==3.8.1
 ezdxf==0.18.1
 pcb-tools
-pcb-tools-extensions 
+# pcb-tools-extensions
 shapely
