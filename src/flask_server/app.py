@@ -45,7 +45,7 @@ db = SQLAlchemy(app)
 
 class Ink(db.Model):
     """
-
+    
     """
     __tablename__ = 'ink'
     id = db.Column(db.Integer, primary_key=True) 
@@ -195,7 +195,6 @@ def calibrate():
         return render_template('calibrate.html') 
     else:
         return render_template('calibrate.html') 
-
 
 
 
