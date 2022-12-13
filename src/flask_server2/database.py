@@ -20,6 +20,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 
 
+from sqlalchemy.types import JSON
+from sqlalchemy.ext.mutable import MutableDict
 # Base = declarative_base()
 
 
@@ -33,6 +35,7 @@ class Project(db.Model):
     name = db.Column(db.String(100))
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(300), nullable=False)
+    settings = db.Column(MutableDict.as_mutable(JSON), nullable=True)
 
     # slug = db.Column(db.String(100))
 

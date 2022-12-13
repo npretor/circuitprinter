@@ -21,6 +21,7 @@
                                 <small>3 days ago</small>
                                 </div>
                                 <p class="mb-1">Project name: {{project.content}}</p>
+                                <p class="mb-1">Settings: {{project.settings|tojson|safe}}</p>
                                 <small>(In progress)</small>
 
                             </a>
@@ -58,10 +59,17 @@
 -->
                     <hr>
                     <h4>Create a new project</h4>
-                    <form action="/projects" method="POST">
-                        <input type="text" name="content" id="content">
-                        <input type="submit" value="Add Project">
-                    </form>
+
+                        <form action="/projects" method="POST">
+
+                            <p class="mb-1">Project name</p>
+                            <p class="mb-1"><input type="text" name="content" id="content"></p>
+                            <p class="mb-1"><label>Settings</label></p>
+                            <p class="mb-1">
+                                <textarea name="settings" id="settings"></textarea>
+                            </p>
+                            <input type="submit" value="Add Project">
+                        </form>
 
                 </div>
             </div> 
