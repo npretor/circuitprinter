@@ -19,3 +19,5 @@ ezdxf==0.18.1
 pcb-tools
 # pcb-tools-extensions
 shapely
+mysqlclient
+pymysql
