@@ -1,63 +1,38 @@
-# circuitprinter
+# Circuitprinter
 The goal of this project is to print additive circuit traces on the E3D and Jubilee toolchanging 3D printers
 
 
-# Bill of materials: 
-https://docs.google.com/spreadsheets/d/1qsuu0mqhYLWQeWLX05LpEEylz75LFKVL712LdSZb1z4/edit?usp=sharing
+
+## Bill of materials: 
+<a href="https://docs.google.com/spreadsheets/d/1qsuu0mqhYLWQeWLX05LpEEylz75LFKVL712LdSZb1z4/edit?usp=sharing">link to BOM</a>
 
 
-# Constraints
-* Start with a DXF using named layers for process definition 
-* Json database for now, especially when defining and fleshing things out
+## Installation
 
+1. Install dependencies
+```
+pip3 install -r requirements.txt 
+brew install mysql 
+brew services start mysql 
+```
 
-## Flask app Development setup
+2. Start virtual environment 
+```
 
-### 1. Install dependencies
-* pip3 install -r requirements.txt 
-* pip3 install mysqlclient
-* brew install mysql 
-* brew services start mysql 
-
-
-### 2. Install workbench
+```
+3. Install workbench
 - create schema -> circuitprinter
-
-### 3. Initialise Tables
-- python refreshdb.py
-
-### 4. Start app
-- python app.py
-
-## Setup process
-
-### 1. Startup 
-1. Load previous configuration 
-2. Home axes 
-### 2. Processing 
-- Parse file 
-- Convert to machine code 
-- Run machine code 
-### 3. Go
-- Select project and go 
+4. Initialise Tables
+```
+python refreshdb.py
+```
+5. Start app
+```
+python app.py
+```
 
 
-# Printing process 
-(PRESETS) 
-* Select tool 
-* Initial extrusion in artwork print 
-* For each line: 
-    * Rapid to line location in XY at RAPID_HEIGHT 
-    * Drop to from RAPID HEIGHT to PRINT_HEIGHT 
-    * Prime (START_PRESSURE) 
-    * Delay time (START_DELAY_TIME) 
-    * Move from start to end with (PRINT_SPEED) 
-    * Delay time (END_DELAY_TIME) 
-    * Prime (END_PRESSURE) 
-    * Raise to (RAPID HEIGHT) 
-
-
-# Development state 1 
+# Development stage 1 
 - Create a process step
     - Process name 
     - Print settings recipe 
