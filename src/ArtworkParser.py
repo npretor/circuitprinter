@@ -19,7 +19,7 @@ class ArtworkParser:
             surfacePath = self.dxf_to_list(filepath)
             return surfacePath 
         elif filepath.endswith('.gbr'):
-            print("File type not supported") 
+            print("File type not yet supported") 
         else:
             print("Unknown file type")
             
