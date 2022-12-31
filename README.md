@@ -11,9 +11,12 @@ The goal of this project is to print additive circuit traces on the E3D and Jubi
 
 1. Install dependencies
 ```
-pip3 install -r requirements.txt 
 brew install mysql 
 brew services start mysql 
+pip3 install -r requirements.txt
+
+To connect run:
+    mysql -u root
 ```
 
 2. Start virtual environment 
@@ -22,10 +25,25 @@ brew services start mysql
 ```
 3. Install workbench
 - create schema -> circuitprinter
-4. Initialise Tables
+
+3. Without workbench
+- mysql -u root
+- show databases;
+- create schema circuitprinter;
+- use circuitprinter;
+- show tables;
+- 
+3.1 Initialise Tables
 ```
 python refreshdb.py
 ```
+3.2 Check tables were initialized
+```
+mysql> show tables;
+mysql> describe process;
+mysql> select * from process limit 1;
+```
+
 5. Start app
 ```
 python app.py

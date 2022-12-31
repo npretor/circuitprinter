@@ -11,54 +11,22 @@ import glob, os
 import json
 import threading
 from printer import Printer
-from hardware.testController import TestController
-from hardware.DuetController import DuetController
+from hardware.MotionController import MotionController
 
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import declarative_base
-from sqlalchemy import Column, Integer, String, DateTime, Text, Float
-from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy_json import mutable_json_type
+# from flask_sqlalchemy import SQLAlchemy
+# from sqlalchemy.orm import declarative_base
+# from sqlalchemy import Column, Integer, String, DateTime, Text, Float
+# from sqlalchemy.dialects.postgresql import JSONB
+# from sqlalchemy_json import mutable_json_type
+from database import app, db, Project
 
-app = Flask(__name__)
+# app = Flask(__name__)
 
-motion = None
-
-def startup_options():
-    # Connect to motion system, test or real
-    motion = TestController()
-    return True
-startup_options()
+motion = MotionController() 
+printer = Printer() 
 
 
-# - - - - Database startup - - - - - # 
-# host='localhost'
-# user='root'
-# passwd='new_password'
-# database='ORMDB'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://'+user+':'+passwd+'@'+host+'/'+database
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-
-db = SQLAlchemy(app)
-
-class Ink(db.Model):
-    """
-    
-    """
-    __tablename__ = 'ink'
-    id = db.Column(db.Integer, primary_key=True) 
-    name = db.Column(db.String(100)) 
-    json_data = db.Text()
-    
-# with app.app_context():
-#     db.create_all()
-
-
-# - - - - hardware startup - - - - - # 
-printer = Printer()
-motion = DuetController()
 
 @app.route("/", methods={"GET", "POST"}) 
 def home():
@@ -68,6 +36,12 @@ def home():
     else:
         return render_template('home.html')
 
+
+# = = = = = = = = Print process = = = = = = = = # 
+# = = = = = = = = Upload        = = = = = = = = # 
+# = = = = = = = = Parse         = = = = = = = = # 
+# = = = = = = = = Config        = = = = = = = = # 
+# = = = = = = = = Run           = = = = = = = = # 
 @app.route("/step1_upload", methods={"GET", "POST"}) 
 def step1_upload():
     if request.method == "POST":
@@ -145,15 +119,68 @@ def step4_run():
     else:    
         return render_template('step4_run.html')
 
+
+# = = = = = = = = Projects CRUD = = = = = = = = # 
+@app.route("/projects", methods=["GET", "POST"])
+def projects():
+    # = = = = = = = Create = = = = = = = #
+    if request.method == "POST":
+        content = request.form['content']
+        settings = request.form['settings']
+        new_project = Project(content=content, settings=json.loads(settings))
+
+        try: 
+            db.session.add(new_project) 
+            db.session.commit() 
+            return redirect('/projects') 
+        except:
+            return 'There was an error while adding the project' 
+    else:
+        # = = = = = = = Read = = = = = = = #
+        all_projects = Project.query.all()
+        return render_template("projects.html", projects=all_projects)
+
+@app.route('/delete/<int:project_id>')
+def delete(project_id):
+    # = = = = = = = Delete = = = = = = = #
+    project_to_delete = Project.query.get_or_404(project_id)
+    try:
+        db.session.delete(project_to_delete)
+        db.session.commit()
+        return redirect('/projects')
+    except:
+        return 'There was an error while deleting that project'
+
+@app.route('/update/<int:project_id>', methods=['GET', 'POST'])
+def update(project_id):
+    # = = = = = = = Update = = = = = = = #
+    project = Project.query.get_or_404(project_id)
+
+    if request.method == 'POST':
+        project.content = request.form['content']
+        project.settings = json.loads(request.form['settings'] or {})
+
+        try:
+            db.session.commit()
+            return redirect('/projects')
+        except:
+            return 'There was an issue while updating that project'
+
+    else:
+        return render_template('update.html', project=project)
+
+
 @app.route("/startup_system", methods={"GET", "POST"}) 
 def startup_system():
+    """
+    Homes motion system
+    """
     if request.method == "POST": 
         return redirect('/') 
     else:    
         # Home the system
+        motion.connect()
         print("Homing motion system")
-        #motion = TestController()
-        motion = DuetController()
         motion.home()
         print("System ready")
         return redirect('/') 
@@ -171,9 +198,10 @@ def settings():
 
 @app.route("/calibrate", methods={"GET", "POST"}) 
 def calibrate():
-    if request.method == "POST":
-        # Verify we are connected first
-        print(request.form)
+    """
+    TODO: Verify we are connected first 
+    """
+    if request.method == "POST": 
         if "x_value" in request.form:
             print("moving x axis: ", request.form["x_value"])
             motion.moveRel([request.form["x_value"], 0, 0]) 
@@ -181,15 +209,13 @@ def calibrate():
             print("moving y axis: ", request.form["y_value"])
             motion.moveRel([0, request.form["y_value"], 0])
         elif "z_value" in request.form:
-            print("moving z axis: ", request.form["z_value"])       
+            print("moving z axis: ", request.form["z_value"]) 
             motion.moveRel([0, 0, request.form["z_value"]]) 
         elif "saveLocation" in request.form:
-            print("Saving location: ", motion.get_absolute_position())
-            line = motion.get_absolute_position()
-            res = line.split(' ')[0:5] 
-            locations = [item[2:] for item in res] 
-            print("locations: ", locations)            
-            print("saving XYZ: ".format(locations[0], locations[1], locations[2]))
+            print("Saving location: ", motion.get_absolute_position()) 
+            locations = motion.get_absolute_position() 
+            print("locations: ", locations)  
+            print("saving XYZ: ".format(locations[0], locations[1], locations[2])) 
         else:
             print("Error, unknown motion request")
         return render_template('calibrate.html') 

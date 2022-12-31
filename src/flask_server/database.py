@@ -97,3 +97,12 @@ class Process(db.Model):
     def __repr__(self) -> str:
         return '<Process %r>' % self.name 
 
+
+class Ink(db.Model):
+    """
+
+    """
+    __tablename__ = 'ink'
+    id = db.Column(db.Integer, primary_key=True) 
+    name = db.Column(db.String(100)) 
+    json_data = db.Text()
