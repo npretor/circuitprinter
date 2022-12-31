@@ -1,0 +1,68 @@
+<%- include('../partials/header'); %>
+
+<!-- Main body -->
+<div class="col-3"></div> 
+<div class="col-6"></div> 
+    <div class="container">
+        <video src="/video"></video>
+        <form action="/tool_calibration" method="POST" name="saveHome" id="saveCurrentLocation">
+            <p><b>Select a tool and move to the calibration point: </b></p>
+                <select class="form-select" name="toolName" id="selectedTool">
+                    <option value="camera" name="camera">Camera</option>
+                    <option value="dispenser" name="air-extrusion">Primary conductive</option>
+                    <option value="dispenser" name="air-extrusion">Dielectric</option>
+                    <option value="adhesive" name="air-extrusion">Adhesive</option>
+                </select>
+
+            <p><b>Move to ChaRuCo point and focus accordingly</b></p>
+            <hr>
+            <div class="row">
+                <div class="col"><h3>Move X axis (mm)</h3></div> 
+                <div class="col">
+                    <div class="btn-group" role="group" aria-label="X axis movement">
+                        <button type="submit" name="x_value" value="-10" class="btn btn-secondary">-10</button>
+                        <button type="submit" name="x_value" value="-1" class="btn btn-secondary">-1</button>
+                        <button type="submit" name="x_value" value="-0.1" class="btn btn-secondary">-0.1</button>
+                        <button type="submit" name="x_value" value="0.1" class="btn btn-secondary">-0.1</button>                    
+                        <button type="submit" name="x_value" value="1" class="btn btn-secondary">1</button>
+                        <button type="submit" name="x_value" value="10" class="btn btn-secondary">10</button>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">        
+                <div class="col"><h3>Move Y axis (mm)</h3></div> 
+                <div class="col">
+                    <div class="btn-group" role="group" aria-label="Y axis movement">
+                        <button type="submit" name="y_value" value="-10" class="btn btn-secondary">-10</button>
+                        <button type="submit" name="y_value" value="-1" class="btn btn-secondary">-1</button>
+                        <button type="submit" name="y_value" value="-0.1" class="btn btn-secondary">-0.1</button>
+                        <button type="submit" name="y_value" value="0.1" class="btn btn-secondary">-0.1</button>                    
+                        <button type="submit" name="y_value" value="1" class="btn btn-secondary">1</button>
+                        <button type="submit" name="y_value" value="10" class="btn btn-secondary">10</button>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col"><h3>Move Z axis (mm)</h3></div> 
+                <div class="col">
+                    <div class="btn-group" role="group" aria-label="Z axis movement">
+                        <button type="submit" name="z_value" value="-10" class="btn btn-secondary">-10</button>
+                        <button type="submit" name="z_value" value="-1" class="btn btn-secondary">-1</button>
+                        <button type="submit" name="z_value" value="-0.1" class="btn btn-secondary">-0.1</button>
+                        <button type="submit" name="z_value" value="0.1" class="btn btn-secondary">-0.1</button>                    
+                        <button type="submit" name="z_value" value="1" class="btn btn-secondary">1</button>
+                        <button type="submit" name="z_value" value="10" class="btn btn-secondary">10</button>
+                    </div> 
+                </div>
+            </div>    
+            <hr>
+            <p>                
+            <button type="submit" class="btn btn-primary" name="saveHome" value="camera">Set focus and get resolution</button>
+            </p>
+        </form>
+    </div>  
+<div class="col-3"></div> 
+
+<%- include('../partials/footer'); %>  

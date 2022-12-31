@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Main body -->
+    <div class="container">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-6">
+                <p></p>
+                <h3>1. Select artwork</h3> 
+                <form action="/step1_upload" method="POST" id="set_dxf">    
+                    
+                    <!-- FILES --> 
+                    <!-- Fow now skip file uploading and management -->
+                    <select class="form-select" name="filename" id="filename">
+                        {% for filename in filenames %}
+                            <option name="{{filename}}"> {{filename}} </option>
+                        {% endfor %}
+                    </select> 
+
+                    <p></p>
+
+                    <button type="submit" class="btn btn-success">Create</button> 
+                </form>
+            </div> 
+            <div class="col"></div> 
+        </div> 
+        </div> 
+
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Main body -->
+    <div class="container">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-6">
+                <p></p>
+                <div class="jumbotron">
+                    <h3>Configure the process step</h3> 
+                    <form action="/create_process" method="POST" id="create_process">
+                        
+                        <!-- PROJECT NAME --> 
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Process name</span>
+                            </div> 
+                            <input type="text" name="project_name" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"> 
+                        </div>       
+                        
+                        <!-- FILES --> 
+                        <!-- Fow now skip file uploading and management -->
+                        <select class="form-select" name="filename" id="filename">
+                            {% for filename in filenames %}
+                                <option name="{{filename}}"> {{filename}} </option>
+                            {% endfor %}
+                        </select> 
+
+                        <p></p>
+                
+                        <!-- PROCESS TYPE --> 
+                        <select class="form-select" name="process_type" id="process_type">
+                            {% for process_type in process_types %}
+                                <option name="{{process_type}}"> {{process_type}} </option>
+                            {% endfor %}
+                        </select> 
+
+                        <p></p> 
+
+                        <!-- SELECT AN INK RECIPE -->
+                        <select class="form-select" name="selected_ink_recipe" id="selected_ink_recipe">
+                            {% for ink_recipe in ink_list %}
+                                <option name="{{ink_recipe}}" > {{ink_recipe}} </option>
+                            {% endfor %}
+                        </select> 
+
+                        <p></p>
+
+                        <button type="submit" class="btn btn-success">Create</button> 
+                    </form>
+                    
+                </div>
+            </div> 
+            <div class="col"></div> 
+        </div> 
+        </div> 
+
+{% endblock %}

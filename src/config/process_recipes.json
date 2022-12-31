@@ -1,0 +1,12 @@
+{
+    "ACI_3124_fast_150um": {
+        "print_speed": 3.0,
+        "nozzle": 0.150,
+        "tip height": 0.075
+    },
+    "ACI_3124_slow_50um": {
+        "print_speed": 1.0,
+        "nozzle": 0.050,
+        "tip height": 0.040
+    }    
+}
