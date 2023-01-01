@@ -46,6 +46,89 @@ class Printer:
         else:
             print("File type not supported") 
 
+    def stepperExtrusion(self, printPaths):
+        """
+        Need to know: 
+            Which extruder to use 
+
+        """
+
+
+
+        return machine_code
+
+    def pressureExtrusion(self, polylines, settings):
+        """
+        Need to know: 
+            Which gpio to switch 
+            Which tool to select 
+            Z zeroed height 
+            Print height 
+            Speed 
+            Start delay
+            Stop delay 
+            Retract height 
+
+
+        """
+        machine_code = []
+
+        # 1. Select tool 
+        # 2. Allow cold extrudes 
+
+        # For each line 
+        #   1. Drop down 
+        #   2. Start pressure 
+        #   3. Start_delay 
+        #   4. Move from start to end at print height at print speed 
+        #   5. Stop pressure at n units from the end 
+        #   6. Raise up 
+        settings = {
+            "rapid_height": 5.0, 
+            "rapid_speed": 500, 
+            "print_height": 0.05, 
+            "print_speed": 4.0,
+            "start_delay": 0.1,
+            "end_delay": .1,
+            "gpio": 2, 
+        }
+
+
+        for polyline in polylines: 
+            start_pt = polyline[0] 
+            end_pt = polyline[:-1] 
+
+            # Rapid to start point 
+            # print("Moving to: {}".format(start_pt))
+            machine_code.append('G0 X{} Y{} Z{} F{}'.format(start_pt[0], start_pt[1], settings["rapid_height"], settings["rapid_speed"])) 
+
+            # Drop down 
+            machine_code.append('G0 Z{}'.format(settings["print_height"])) 
+
+            # Pause before start
+            machine_code.append('G4 {}'.format(settings['start_delay'])) 
+
+            # Pressure on  
+            machine_code.append('M106 P{} S1.0'.format(settings['gpio']))
+
+            for line_segment in polyline[1:]:
+                # Print all but the last one 
+                
+                # Move 
+                # print("Moving to: {}".format(line_segment)) 
+                machine_code.append('G1 X{} Y{} F{}'.format(line_segment[0], line_segment[1], settings["print_speed"])) 
+
+            # Pause (technically a dwell, units=milliseconds)
+            machine_code.append('G4 {}'.format(settings['end_delay'])) 
+
+            # Pressure off 
+            machine_code.append('M106 P{} S0.0'.format(settings['gpio'])) 
+
+            # Raise up 
+            machine_code.append('G0 Z{}'.format(settings["rapid_height"])) 
+
+        return machine_code       
+
 
     def createMachineCode(self, tool_number, process_recipe, ink_settings):
         """
