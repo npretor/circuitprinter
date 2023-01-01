@@ -6,7 +6,9 @@ from collections import defaultdict
 from flask import Flask, request, render_template, jsonify, redirect
 from flask.views import View, MethodView
 import sys
+
 sys.path.append('../')
+import logging
 import glob, os 
 import json
 import threading
@@ -22,14 +24,15 @@ from database import app, db, Project
 
 # app = Flask(__name__)
 
-motion = MotionController() 
+logging.basicConfig(level=logging.INFO)
+
+motion = MotionController(test_mode=False) 
 printer = Printer() 
 
 
 @app.route("/", methods={"GET", "POST"}) 
 def home():
     if request.method == "POST":
-        print("homing")
         return redirect("/")
     else:
         return render_template('home.html')
@@ -177,10 +180,13 @@ def startup_system():
         return redirect('/') 
     else:    
         # Home the system
-        motion.connect()
-        print("Homing motion system")
-        motion.home()
-        print("System ready")
+        if motion.connect():
+            print("Homing motion system")
+            motion.home()
+            print("System ready")
+        else:
+            print("Could not connect")
+
         return redirect('/') 
 
 @app.route("/show_artwork", methods={"GET", "POST"})
@@ -201,21 +207,26 @@ def calibrate():
     """
     if request.method == "POST": 
         if "x_value" in request.form:
-            print("moving x axis: ", request.form["x_value"])
+            logging.info("moving x axis: ".format(request.form["x_value"]))
             motion.moveRel([request.form["x_value"], 0, 0]) 
+
         elif "y_value" in request.form:
-            print("moving y axis: ", request.form["y_value"])
+            logging.info("moving y axis: ".format(request.form["y_value"]))
             motion.moveRel([0, request.form["y_value"], 0])
+
         elif "z_value" in request.form:
-            print("moving z axis: ", request.form["z_value"]) 
+            logging.info("moving z axis: ".format(request.form["z_value"]))
             motion.moveRel([0, 0, request.form["z_value"]]) 
+
         elif "saveLocation" in request.form:
-            print("Saving location: ", motion.get_absolute_position()) 
             locations = motion.get_absolute_position() 
-            print("locations: ", locations)  
-            print("saving XYZ: ".format(locations[0], locations[1], locations[2])) 
+
+            if locations == None:
+                logging.error("location parsing error")
+            else:
+                logging.info("saving XYZ: {} {} {}".format(locations[0], locations[1], locations[2])) 
         else:
-            print("Error, unknown motion request")
+            logging.error("Error, unknown motion request")
         return render_template('calibrate.html') 
     else:
         return render_template('calibrate.html') 

@@ -2,7 +2,7 @@ import json
 import logging
 import os
 from platform import machine 
-from hardware.DuetController import DuetController
+from hardware.MotionController import MotionController
 from ArtworkParser import ArtworkParser
 
 class Printer:
@@ -175,11 +175,27 @@ class Printer:
 
         return True 
 
+    def runProcess(self, gcode_path, tool_number, z_calibration=False):
+        """
+        
+        Are we doing calibration? Yes/No 
 
-    def runProcess(self):
+        """
+        # Get the tool
+        motion.send('T{}'.format(tool_number))
+
+        if z_calibration == True:
+            # TODO: Calibrate: 
+            # TODO: Apply z calibration, or set as zero point 
+            pass
+
+        else:
+            pass
+
+
+        
         return True 
     
-
     def compileMachineCode(self, filepath, process_settings, ink_settings):
         line_list = self.parseDesign(filepath)
         gcode_list = self.createMachineCode(line_list, 0, process_settings, ink_settings) 

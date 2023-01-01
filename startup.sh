@@ -1,3 +1,4 @@
 # bin/bash 
-
-cd src/flask_server2 && python3 app.py 
+source venv/bin/activate
+cd src/flask_server 
+python3 app.py 
