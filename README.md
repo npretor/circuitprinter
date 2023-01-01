@@ -10,43 +10,56 @@ The goal of this project is to print additive circuit traces on the E3D and Jubi
 ## Installation
 
 1. Install dependencies
+
+Mac: 
 ```
-brew install mysql 
+brew install mysql
 brew services start mysql 
+python3 -m venv venv 
+source venv/bin/activate 
 pip3 install -r requirements.txt
-
-To connect run:
-    mysql -u root
 ```
 
-2. Start virtual environment 
+Linux
+Need to install rust for the mysql client 
+```
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh  
+sudo apt install mariadb-server default-libmysqlclient-dev python3-dev default-libmysqlclient-dev build-essential
+# Install geos 
+apt-get install libgeos++
+python3 -m venv venv 
+source venv/bin/activate 
+pip3 install -r requirements.txt 
 ```
 
+2. Create schema 
 ```
-3. Install workbench
-- create schema -> circuitprinter
+mysql -u root or sudo mysql -u root -p 
+SET PASSWORD FOR 'root'@'localhost' = PASSWORD('');
+UPDATE mysql.user SET plugin = '' WHERE user = 'root' AND host = 'localhost';
+FLUSH PRIVILEGES;
 
-3. Without workbench
-- mysql -u root
-- show databases;
-- create schema circuitprinter;
-- use circuitprinter;
-- show tables;
-- 
-3.1 Initialise Tables
+show databases; 
+create schema circuitprinter; 
+use circuitprinter; 
+show tables; 
 ```
+
+3. Initialise Tables
+```
+cd src/flask_server
 python refreshdb.py
 ```
-3.2 Check tables were initialized
+4. Check tables were initialized
 ```
 mysql> show tables;
 mysql> describe process;
-mysql> select * from process limit 1;
+mysql> select * from process limit 1; 
 ```
 
 5. Start app
 ```
-python app.py
+python3 app.py
 ```
 
 
