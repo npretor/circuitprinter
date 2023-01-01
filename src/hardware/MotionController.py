@@ -6,7 +6,7 @@ import serial
 import logging
 
 #logging.basicConfig(filename='log_ '+ datetime.now().isoformat().replace(":", "_").replace(".","_") + '.log', encoding='utf-8', level=logging.DEBUG)
-logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
 
 
 def open_serial(port, baudrate):
@@ -24,14 +24,16 @@ class MotionController:
 
     def connect(self):
         if self.test_mode:
-            print('Connected to virtual printer')
+            logging.info('Connected to virtual printer') 
+            return True
         else:
             try:
                 self.device = open_serial(self.port, self.baudrate)
-                print('connected to printer')
+                return True
             except:
-                print("Error connecting.")
-                sys.exit(0)
+                return False
+                #sys.exit(0)
+
 
     # wrapper function for connect() that prints out start banner and has delay.
     def start(self):
@@ -48,7 +50,7 @@ class MotionController:
         else:
             message += '\r\n'
             self.device.write(message.encode('utf-8'))
-            print("message sent to printer: %s" % message)
+            logging.info("message sent to printer: %s" % message)
             response = ''
             check = ''
             # waits to get entire message 
@@ -73,9 +75,15 @@ class MotionController:
 
     def parsePosition(self, line):
         res = line.split(' ') 
-        locations = [float(item[2:]) for item in res] 
-        print("locations: ", locations)
-        return locations
+        logging.info("response: {}".format(res))
+        
+        # Only get the X, Y, and Z
+        try:
+            locations = [float(item[2:]) for item in res[0:3]] 
+            logging.info("locations: {}".format(locations))
+            return locations
+        except:
+            return None
 
     # perform homing action
     def home(self):
@@ -116,14 +124,15 @@ class MotionController:
         
     def disconnect(self):
         if self.test_mode:
-            print("disconnected")
+            logging.info("virtual motion disconnected")
             return True
+
         # close the serial connection
         try:
             self.device.close()
-            print('disconnected')
+            logging.info('motion system disconnected')
             return True
         except:
-            print("Error closing connection.")
+            logging.info("Error closing connection.")
             return False
         time.sleep(3)
