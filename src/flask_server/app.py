@@ -206,6 +206,7 @@ def calibrate():
     TODO: Verify we are connected first 
     """
     if request.method == "POST": 
+        print(request.form)
         if "x_value" in request.form:
             logging.info("moving x axis: ".format(request.form["x_value"]))
             motion.moveRel([request.form["x_value"], 0, 0]) 
@@ -225,8 +226,25 @@ def calibrate():
                 logging.error("location parsing error")
             else:
                 logging.info("saving XYZ: {} {} {}".format(locations[0], locations[1], locations[2])) 
+        elif "getTool" in request.form:
+            logging.info("Getting tool {}".format(request.form["toolNumber"]))
+            motion.send("T{}".format(request.form["toolNumber"])) 
+
+        elif "replaceTool" in request.form:
+            logging.info("Replacing current tool")
+            motion.send("T-1") 
+
+        elif "gpio_on" in request.form:
+            logging.info("GPIO {} on".format(request.form['gpio_on']))    
+            motion.send("M106 P{} S1.0".format(request.form['gpio_on']))  
+
+        elif "gpio_off" in request.form:
+            logging.info("GPIO {} off".format(request.form['gpio_off']))   
+            motion.send("M106 P{} S0.0".format(request.form['gpio_off']))  
+
         else:
             logging.error("Error, unknown motion request")
+
         return render_template('calibrate.html') 
     else:
         return render_template('calibrate.html') 
