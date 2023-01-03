@@ -2,40 +2,23 @@
     "tools": {
         "1": {
             "name": "Pneumatic extruder 1",
-            "is_loaded": 1,
-            "control_pin": 12,
-            "last_offset:": {
-                "x": 0.0, 
-                "y": 0.0, 
-                "z": 0.0
-            }
+            "type": "pressure_extruder",
+            "tip_zero": [0,0, 0.0, 0.0] 
         },
         "2": {
             "name": "Pneumatic extruder 2",            
-            "is_loaded": 1,
-            "last_offset:": {
-                "x": 0.0, 
-                "y": 0.0, 
-                "z": 0.0
-            } 
+            "type": "pressure_extruder",
+            "tip_zero": [0,0, 0.0, 0.0] 
         },
         "3": {
             "name": "Stepper extruder 3",            
-            "is_loaded": 1,
-            "last_offset:": {
-                "x": 0.0, 
-                "y": 0.0, 
-                "z": -1.95
-            }
+            "type": "stepper_extruder",
+            "tip_zero": [0,0, 0.0, 0.0] 
         },                
         "0": {
-            "name": "camera",            
-            "is_loaded": 1,
-            "last_offset:": {
-                "x": 0.0, 
-                "y": 0.0, 
-                "z": 13.0
-            }
+            "name": "RPI HQ Camera",         
+            "type": "camera",   
+            "tip_zero": [0,0, 0.0, 0.0] 
         }
     },
     "z_cal_location": {
@@ -52,5 +35,5 @@
     "print_height": -1.95,
     "tip_height": 0.050,
     "units": "mm",
-    "light_control_pin": 4
-}
+    "light_control_pin": 4 
+} 

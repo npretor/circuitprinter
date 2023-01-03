@@ -10,29 +10,39 @@ class Printer:
         self.motion = None
         self.vectorArtwork = None
         self.machineCode = None
+        self.current_job = None
+        self.currentToolNum = None
+
+        self.process_recipes = None
+        self.machine_settings = None 
+
+        with open('../config/process_recipes.json','r') as f:
+            self.process_recipes = json.load(f) 
+        with open('../config/machine_settings.json','r') as f:
+            self.machine_settings = json.load(f) 
 
     # = = = = = = = = Motion related functions = = = = = = = = #
     def startup(self):
         # connect to motion system
-        self.connect() 
-        self.home() 
-        self.hardwareSpecificSetup() 
+        # self.connect() 
+        # self.home() 
+        # self.hardwareSpecificSetup() 
         return True
+
     def connect(self):
-        self.motion = DuetController() 
+        self.motion = MotionController() 
         try:
             self.motion.connect() 
         except: 
             return False 
+
     def home(self):
         self.motion.home()
     # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 
-
     def hardwareSpecificSetup(self):
         # Run machine-specific startup commands
         self.motion.send('M302 P1')    # Allow cold extrudes
-
 
     def parseDesign(self, filePath):
         """ Parse the file, return the path on a surface """
@@ -46,15 +56,12 @@ class Printer:
         else:
             print("File type not supported") 
 
-    def stepperExtrusion(self, printPaths):
+    def stepperExtrusion(self, polylines, settings):
         """
         Need to know: 
             Which extruder to use 
 
         """
-
-
-
         return machine_code
 
     def pressureExtrusion(self, polylines, settings):
@@ -73,8 +80,9 @@ class Printer:
         """
         machine_code = []
 
-        # 1. Select tool 
-        # 2. Allow cold extrudes 
+        # Already setup
+        #   1. Select tool 
+        #   2. Allow cold extrudes 
 
         # For each line 
         #   1. Drop down 
@@ -83,15 +91,6 @@ class Printer:
         #   4. Move from start to end at print height at print speed 
         #   5. Stop pressure at n units from the end 
         #   6. Raise up 
-        settings = {
-            "rapid_height": 5.0, 
-            "rapid_speed": 500, 
-            "print_height": 0.05, 
-            "print_speed": 4.0,
-            "start_delay": 0.1,
-            "end_delay": .1,
-            "gpio": 2, 
-        }
 
 
         for polyline in polylines: 
@@ -99,11 +98,12 @@ class Printer:
             end_pt = polyline[:-1] 
 
             # Rapid to start point 
-            # print("Moving to: {}".format(start_pt))
+            # print("Moving to: {}".format(start_pt)) 
             machine_code.append('G0 X{} Y{} Z{} F{}'.format(start_pt[0], start_pt[1], settings["rapid_height"], settings["rapid_speed"])) 
 
+            print_z_height = float(settings["print_height"]) + float(settings["z_calibration"])
             # Drop down 
-            machine_code.append('G0 Z{}'.format(settings["print_height"])) 
+            machine_code.append('G0 Z{}'.format(print_z_height)) 
 
             # Pause before start
             machine_code.append('G4 {}'.format(settings['start_delay'])) 
@@ -129,32 +129,16 @@ class Printer:
 
         return machine_code       
 
-
     def createMachineCode(self, tool_number, process_recipe, ink_settings):
         """
         Returns a list of strings which are lines of machine code 
         """
         machine_code = []
         machine_code.append('T{}'.format(tool_number))
-        for line in self.vectorArtwork: 
-            # Extrude
-            machine_code.append('G0 E{}'.format(ink_settings['kick']))
 
-            # Pause (technically a dwell, units=milliseconds)
-            machine_code.append('G4 {}'.format(ink_settings['pause_start']))
-
-            # Move to print trace 
-            machine_code.append('G0 X{} Y{} F{}'.format( 100, 200,  200))
-
-            # Pause (technically a dwell, units=milliseconds)
-            machine_code.append('G4 {}'.format(ink_settings['pause_end']))
-
-            # Retract
-            machine_code.append('G0 E{}'.format(ink_settings['unkick']))
 
         machine_code.append('T-1')
         return machine_code 
-
 
     def validateMachineCode(self, machine_code):
         vm = self.virtualMotion()

@@ -29,6 +29,19 @@ logging.basicConfig(level=logging.INFO)
 motion = MotionController(test_mode=False) 
 printer = Printer() 
 
+# move all motion control into printer, for now keep these here 
+
+#
+def silverPrintSetup(toolNumber=1, cal_location=[10, 17, 2]):
+    """ Load the tool, move to calibration location """ 
+    
+    # Load tool
+    motion.send("T{}".format(str(toolNumber))) 
+    # Set cold extrusion 
+    motion.send("M302 P1") 
+    # Move to calibration location 
+    motion.send("G0 X{} Y{} Z{}".format(cal_location[0], cal_location[1], cal_location[2])) 
+
 
 @app.route("/", methods={"GET", "POST"}) 
 def home():
@@ -42,6 +55,7 @@ def home():
 # = = = = = = = = Upload        = = = = = = = = # 
 # = = = = = = = = Parse         = = = = = = = = # 
 # = = = = = = = = Config        = = = = = = = = # 
+# Config takes the attributes, and compiles the gcode 
 # = = = = = = = = Run           = = = = = = = = # 
 @app.route("/step1_upload", methods={"GET", "POST"}) 
 def step1_upload():
@@ -73,28 +87,49 @@ def step2_show_parsing():
 
 @app.route("/step3_config", methods={"GET", "POST"})
 def step3_config():
+    """
+
+
+    """
     if request.method == "POST":
-        process_recipe_name = request.form['process_recipe'] 
-        ink_recipe_name = request.form['selected_ink_recipe'] 
-        tool_number = request.form['tool_number'] 
-        print("ink recipe: ",ink_recipe_name)
-        print('process_type: ', process_recipe_name)
-        print('tool number: ', tool_number)
+        process_recipe_name     = request.form['process_recipe'] 
+        tool_number             = request.form['tool_number'] 
+        ink_recipe_name         = request.form['selected_ink_recipe'] 
 
-        # TODO: Get process settings to apply to machine code 
-        with open('../config/process_recipes.json','r') as f:
-            process_recipes = json.load(f) 
+        print('process_type:  ', process_recipe_name) 
+        print('tool number:   ', tool_number) 
+        print('ink recipe:    ', ink_recipe_name) 
 
+
+        # TODO: Get process settings to apply to machine code. Get these from the printer 
         # TODO: Read machine settings for tool offsets
+        #cal_location = printer.machine_settings['tools'][str(tool_number)]['tip_zero'] 
+        cal_location = printer.machine_settings['tools'][str(1)]['tip_zero'] 
+        print("calibration location: ", cal_location) 
 
-        # TODO: Get ink recipe to pass to 
-        # Ink recipes
-        with open('../config/inks.json','r') as f:
-            ink_data = json.load(f) 
+        # Load tool and move to calibration location 
+        silverPrintSetup(tool_number, cal_location) 
         
-        printer.createMachineCode(tool_number, process_recipes[process_recipe_name], ink_data[ink_recipe_name])
+        polylines = [
+            [(0,0), (10, 0), (10, 10), (0, 10), (0, 0)],
+            [(0,0), (9, 0), (9, 9), (0, 9), (0, 0)]
+        ]
+        
+        settings = {
+            "rapid_height": 5.0, 
+            "rapid_speed": 1000, 
+            "print_height": 1.0, 
+            "z_calibration": printer.machine_settings['tools'][str(tool_number)]["tip_zero"][2],
+            "print_speed": 100.0,
+            "start_delay": 0.1,
+            "end_delay": .1,
+            "gpio": 2, 
+        }
 
-        return redirect('/step4_run')
+        #gcode = printer.createMachineCode(tool_number, process_recipes[process_recipe_name], ink_data[ink_recipe_name])
+        printer.machineCode = printer.pressureExtrusion(polylines, settings) 
+
+        return redirect('/startPrint') 
     else:
         # Get process configs
         #process_types = ['extrusion_print', 'cure', 'adhesive_print', 'take_images']
@@ -104,7 +139,7 @@ def step3_config():
             process_recipes = [recipe for recipe in process_recipe_data]    
         
         # Get tools 
-        tool_numbers = [1,2,3,4] 
+        tool_numbers = [0,1,2,3]  
 
         # Get ink list
         ink_list = []
@@ -113,12 +148,99 @@ def step3_config():
             ink_list = [ink for ink in ink_data]         
         return render_template('step3_config.html', process_recipes=process_recipes, tool_numbers=tool_numbers, ink_list=ink_list) 
 
-@app.route("/step4_run", methods={"GET", "POST"}) 
-def step4_run():
+@app.route("/saveLocation", methods={"POST"})
+def saveLocation():
     if request.method == "POST":
-        pass
+        if "saveLocation" in request.form:
+            locations = motion.get_absolute_position() 
+
+            # TODO Get current tool number, and save the current value as the tool z zero 
+            printer.machine_settings['tools'][str(request.form[toolNumber])]['tip_zero'] = locations
+
+            logging.info("Saved new tool calibration location: {}".format(printer.machine_settings['tools'][str(request.form[toolNumber])]['tip_zero']))
+
+            if locations == None:
+                logging.error("Location parsing error")
+            else:
+                logging.info("Saving XYZ: {} {} {}".format(locations[0], locations[1], locations[2])) 
+        else:
+            logging.error("Error, unknown motion request") 
+    else:
+        logging.error("Posts not supported to this route") 
+
+    return render_template("printCalibration.html") 
+ 
+@app.route("/printCalibration", methods={"GET", "POST"})
+def printCalibration():
+    if request.method == "POST":
+        print(request.form)
+        
+        if "x_value" in request.form:
+            logging.info("Moving x axis: ".format(request.form["x_value"]))
+            motion.moveRel([request.form["x_value"], 0, 0]) 
+
+        elif "y_value" in request.form:
+            logging.info("Moving y axis: ".format(request.form["y_value"]))
+            motion.moveRel([0, request.form["y_value"], 0])
+
+        elif "z_value" in request.form:
+            logging.info("Moving z axis: ".format(request.form["z_value"]))
+            motion.moveRel([0, 0, request.form["z_value"]]) 
+
+        elif "saveLocation" in request.form:
+            locations = motion.get_absolute_position() 
+
+            # TODO Get current tool number, and save the current value as the tool z zero 
+            printer.machine_settings['tools'][str(request.form["toolNumber"])]['tip_zero'] = locations
+            logging.info("Saved new tool calibration location: {}".format(printer.machine_settings['tools'][str(request.form["toolNumber"])]['tip_zero']))
+
+            if locations == None:
+                logging.error("Location parsing error")
+            else:
+                logging.info("Saving XYZ: {} {} {}".format(locations[0], locations[1], locations[2])) 
+
+        elif "getTool" in request.form:
+            logging.info("Getting tool {}".format(request.form["toolNumber"]))
+            motion.send("T{}".format(request.form["toolNumber"])) 
+            printer.currentToolNum = int(request.form["toolNumber"])
+
+        elif "replaceTool" in request.form:
+            logging.info("Replacing current tool")
+            motion.send("T-1") 
+            printer.currentToolNum = None
+
+        elif "gpio_on" in request.form:
+            logging.info("GPIO {} on".format(request.form['gpio_on']))    
+            motion.send("M106 P{} S1.0".format(request.form['gpio_on']))  
+
+        elif "gpio_off" in request.form:
+            logging.info("GPIO {} off".format(request.form['gpio_off']))   
+            motion.send("M106 P{} S0.0".format(request.form['gpio_off']))  
+
+        else:
+            logging.error("Error, unknown motion request")
+        
+        return render_template("printCalibration.html")            
+
+    else:
+        return render_template("printCalibration.html")
+
+@app.route("/startPrint", methods={"GET", "POST"}) 
+def startPrint():
+    if request.method == "POST":
+
+
+
+        return render_template('startPrint.html')
     else:    
-        return render_template('step4_run.html')
+        # Assumes the tool is loaded 
+        # Assumes the print method is pressure, we can select later 
+
+        logging.info("Starting print")
+        logging.info("Printing {} lines of code now".format(len(printer.machineCode)))  
+        for line in printer.machineCode:
+            motion.send(line)         
+        return render_template('startPrint.html')
 
 
 # = = = = = = = = Projects CRUD = = = = = = = = # 
@@ -152,7 +274,7 @@ def delete(project_id):
     except:
         return 'There was an error while deleting that project'
 
-@app.route('/update/<int:project_id>', methods=['GET', 'POST'])
+@app.route('/update/<int:project_id>', methods={'GET', 'POST'})
 def update(project_id):
     # = = = = = = = Update = = = = = = = #
     project = Project.query.get_or_404(project_id)
@@ -183,6 +305,7 @@ def startup_system():
         if motion.connect():
             print("Homing motion system")
             motion.home()
+            motion.send("T-1")              # unload any tools 
             print("System ready")
         else:
             print("Could not connect")
@@ -221,6 +344,8 @@ def calibrate():
 
         elif "saveLocation" in request.form:
             locations = motion.get_absolute_position() 
+
+            # TODO Get current tool number, and save the current value as the tool z zero 
 
             if locations == None:
                 logging.error("location parsing error")
