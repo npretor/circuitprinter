@@ -21,7 +21,7 @@ pip3 install -r requirements.txt
 ```
 
 Linux
-Need to install rust for the mysql client 
+* Need to install rust for the mysql client 
 ```
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh  
 sudo apt install mariadb-server default-libmysqlclient-dev python3-dev default-libmysqlclient-dev build-essential
