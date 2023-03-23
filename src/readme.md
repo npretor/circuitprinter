@@ -1,3 +1,27 @@
+# Circuitprinter 
+
+## Installation 
+```
+
+```
+
+
+## Running 
+```
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
 ### Duet3D IO control
 - Truly at the same time the most exhaustive and the most unreadable documentation I've ever read, especially around which pins map to what
 - Let's use fan 7. Should be P27
