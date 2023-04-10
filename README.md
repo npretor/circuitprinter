@@ -9,7 +9,20 @@ The goal of this project is to print additive circuit traces on the E3D and Jubi
 
 ## Installation
 
+### Install python dependencies 
 1. Install dependencies
+Setup a virtual environment and install python reqs 
+```
+python3 -m venv venv 
+source venv/bin/activate 
+python3 -m pip install -r requirements.txt
+```
+2. Install threejs 
+```
+cd circuitprinter/src/flask_server/static/repos
+git clone https://github.com/mrdoob/three.js.git
+```
+
 
 Mac: 
 ```
