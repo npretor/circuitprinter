@@ -1,47 +1,38 @@
 """
-This client accepts these commands: 
-    moveRelative
-    moveAbsolute
-    Home
-    HomeXY
-    getLocation
+Nathan Pretorius 2022
 
-It returns these: 
-    1:  command executes correctly 
-    0:  command failed
-    2:  out of bounds location or speed
-    location in XYZ: (X, Y, Z)
 
-Example command: 
-{
-    "moveRel": {
-        "x", 10.0, 
-        "y", 10.0, 
-        "z", 10.0, 
-        "speed": 20.0
-    }
-}
 """
 
 
 import json 
 import time
 import zmq
-import logging
+import logging    
 
-PORT = 5555        # Port to listen on (non-privileged ports are > 1023)
-
-SERVER_ADDR = '127.0.0.1'
 
 class MotionClient: 
-    def __init__(self, SERVER_ADDR):
+    """
+
+    """
+    def __init__(self, address='127.0.0.1', socket_port=5555):
         context = zmq.Context()
         self.socket = context.socket(zmq.REQ)
-        self.socket.connect("tcp://{}:{}".format(SERVER_ADDR, PORT))  
+        self.socket.connect("tcp://{}:{}".format(address, socket_port))  
+
+    # def connect(self, port="/dev/ttyACM0", baudrate=115200, test_mode=False):
+    #     message = {"connect": {"port": port, "baudrate": baudrate, "test_mode": test_mode}} 
+    #     res = self.send(message)
+    #     return res['result']
+
+    # def gcode(self, message):
+    #     res = self.send(message)
+    #     return res['result']
 
     def send(self, message):
         self.socket.send(message.encode())
         return(self.socket.recv().decode())
 
     def close(self):
-        self.socket.close()
+        self.socket.close()  
+

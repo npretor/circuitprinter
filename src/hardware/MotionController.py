@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 def open_serial(port, baudrate):
     device = serial.Serial(port, baudrate)
-    time.sleep(10)
+    time.sleep(1)
     return device
 
 class MotionController:
@@ -44,7 +44,6 @@ class MotionController:
     # Sends a message to the device and returns the response message
     def send(self, message):
         if self.test_mode:
-
             response="ok\n"
             return response
         else:
@@ -135,4 +134,3 @@ class MotionController:
         except:
             logging.info("Error closing connection.")
             return False
-        time.sleep(3)

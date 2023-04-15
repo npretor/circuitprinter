@@ -38,8 +38,8 @@ class Printer:
 
     def home(self):
         self.motion.home()
-    # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 
+    # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
     def hardwareSpecificSetup(self):
         # Run machine-specific startup commands
         self.motion.send('M302 P1')    # Allow cold extrudes
@@ -189,11 +189,11 @@ class Printer:
 
 
 class Tool:
-    def __init__(self, name, type, recipe, offset=[0,0,0]):
+    def __init__(self, name, tool_type, recipe, offset=[0,0,0]):
         types = set({'paste_printer', 'tool_camera', 'upward_camera', 'vacuum_tip'})
         self.offset = offset
         self.name = name
-        self.type = type
+        self.tool_type = tool_type
         self.recipe = recipe
 
 

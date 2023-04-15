@@ -13,7 +13,8 @@ import glob, os
 import json
 import threading
 from printer import Printer
-from hardware.MotionController import MotionController
+# from hardware.MotionController import MotionController
+from hardware.MotionClientZMQ import MotionClient
 
 # from flask_sqlalchemy import SQLAlchemy
 # from sqlalchemy.orm import declarative_base
@@ -26,7 +27,8 @@ from database import app, db, Project
 
 logging.basicConfig(level=logging.INFO)
 
-motion = MotionController(test_mode=False) 
+#motion = MotionController(test_mode=False) 
+motion = MotionClient() 
 printer = Printer() 
 
 # move all motion control into printer, for now keep these here 
