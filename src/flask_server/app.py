@@ -179,8 +179,8 @@ def printCalibration():
         
         if "x_value" in request.form:
             logging.info("Moving x axis: ".format(request.form["x_value"]))
-            motion.moveRel([request.form["x_value"], 0, 0]) 
-
+            #motion.moveRel([request.form["x_value"], 0, 0]) 
+            motion.send(json.dumps({'gcode': 'G0 X{} Y0 Z0'.format(request.form["x_value"])}))
         elif "y_value" in request.form:
             logging.info("Moving y axis: ".format(request.form["y_value"]))
             motion.moveRel([0, request.form["y_value"], 0])
@@ -334,7 +334,9 @@ def calibrate():
         print(request.form)
         if "x_value" in request.form:
             logging.info("moving x axis: ".format(request.form["x_value"]))
-            motion.moveRel([request.form["x_value"], 0, 0]) 
+            motion.send(json.dumps({'gcode': 'G0 X{} Y0 Z0'.format(request.form["x_value"])}))
+
+#            motion.moveRel([request.form["x_value"], 0, 0]) 
 
         elif "y_value" in request.form:
             logging.info("moving y axis: ".format(request.form["y_value"]))
