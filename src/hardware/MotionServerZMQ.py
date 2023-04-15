@@ -87,7 +87,22 @@ def processCommand2(incoming):
         motion.send(message['gcode'])
         res = {'status': True}
 
-    return res
+    elif 'moveRel' in message:
+        coords = message['moveRel']  
+        motion.send('G0 X{} Y{} Z{} F{}'.format(coords[0], coords[1], coords[2], 1000))
+
+
+    elif 'moveAbs' in message: 
+        coords = message['moveAbs']
+        motion.send('G91')
+        motion.send('G0 X{} Y{} Z{} F{}'.format(coords[0], coords[1], coords[2], 1000))
+        motion.send('G90')
+    
+    elif 'getPosition' in message:
+        # parse position 
+        return 0
+
+    return res 
 
 
 while __name__ == '__main__':
@@ -114,3 +129,7 @@ while __name__ == '__main__':
             socket.close()
             logging.info('Disconnected')
             break 
+
+finally:
+    motion.close() 
+    socker.close()
