@@ -80,6 +80,8 @@ def step2_show_parsing():
     if request.method == "POST":
         return redirect('/step3_config') 
     else:
+        # 1. Get the existing artwork coordinates
+        # 2. Convert to coordinates and send to the three.js page 
         # Options: 
         #   https://threejs.org/examples/#webgl_lines_fat
         #   https://github.com/mrdoob/three.js/blob/master/examples/webgl_geometry_shapes.html
@@ -314,9 +316,24 @@ def startup_system():
 
         return redirect('/') 
 
+
+@app.route('/serve_artwork')
+def serve_artwork():
+    simple_box = [(0,0), (10,0), (10,10), (0, 10), (0,0)] 
+    return jsonify({'simple_box': simple_box}) 
+
+
 @app.route("/show_artwork", methods={"GET", "POST"})
 def show_artwork():
-    return render_template("show_artwork.html")
+    #simple_box = [(0,0), (500,0), (500,500), (0, 500), (0,0)] 
+    simple_box = [[0,0], [500, 0], [500,500], [0,500], [0,0]]
+
+
+    if request.method == "POST":
+        return render_template("show_artwork.html", simple_box=simple_box)
+    else:    
+        return render_template("show_artwork.html", simple_box=simple_box)
+
 
 @app.route("/settings", methods={"GET", "POST"}) 
 def settings():
@@ -381,4 +398,4 @@ def calibrate():
 
 
 if __name__ == "__main__":
-    app.run(debug=True) 
+    app.run(debug=False) 
