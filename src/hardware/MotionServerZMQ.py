@@ -4,132 +4,84 @@
 #   I should also specify settings, like speed it don't need to specified each time
 
 
-"""
-What I should do every time: 
-
-Receive a command from the client 
-Reply with the 
-
-"""
 import time
 import logging
 import json
 import zmq
+import sys 
 from MotionController import MotionController 
 
-motion = MotionController(test_mode=False) 
-motion.connect() 
-time.sleep(2)
-motion.home()
-time.sleep(5)
 
 logging.basicConfig(level=logging.INFO)
 
-validMessages = {
-    "gcode": "G0 X1 Y1", # Returns response from serial
-    "getPosition": [], 
-    "connect": {"port": "/dev/ttyACM0", "baudrate": 115200, "test_mode": False} ,
-    "disconnect": "", 
-    "home": "", 
-    "getStatus": ""
-}
 
-validResponses = {
-    "result" : True, 
-    "status": {
-        "hw_connected": True, 
-    }
-}
+class MotionServer:
+    def __init__(self, serial_port='/dev/ttyACM1', test_mode=False, host='*', port='5678') -> None:
+        self.serial_port = serial_port
+        self.host = host
+        self.port = port 
+        self.test_mode = test_mode
+        self.motion = MotionController() 
+        self.motion = MotionController(serial_port=self.serial_port, test_mode=self.test_mode) 
 
 
-# - - - - - - - - Variables - - - - - - - - #
-HOST = '*'
-PORT = 5555
+    def processCommand(self, incoming):
+        try:
+            message = json.loads(incoming) 
+        except:
+            logging.error("Cannot process json") 
+            return {"res": False} 
 
+        if "gcode" in message:
+            # Send a generic command and return reply and status 
+            res = self.motion.send(message['gcode']) 
+            return {"res": res} 
 
-def processCommand(message):
-    message = json.loads(message)
+        elif "connect" in message: 
+            """ Connect or disconnect the hardware and return status """
+            if message['connect']:
+                try:
+                    self.motion.connect()
+                    return {"res": True} 
+                except:
+                    logging.error('Could not connect to hardware over serial')
+                    return {"res": False} 
+            else:
+                self.motion.disconnect()
+                return {"res": True} 
 
-    if "status" in message:
-        # Get status and return message 
-        return {"result":True}
-
-    elif "gcode" in message:
-        # Send a generic command and return reply and status 
-        res = motion.send(message['gcode']) 
-        return {"result": res} 
-
-    elif "getPosition" in message: 
-        # Run and return result 
-        return {"result":True} 
-
-    elif "connect" in message: 
-        """ Connect or disconnect the hardware and return status """
-        motion = MotionController(message["connect"]["port"], message["connect"]["baudrate"], message["connect"]["test_mode"]) 
-        if motion.connect() == True:
-            return {"result": True} 
         else:
-            return {"result": False} 
-
-    else:
-        logging.error("Could not parse message")
+            logging.error("Could not parse message") 
+            return {"res": False} 
 
 
-def processCommand2(incoming):
-    try:
-        message = json.loads(incoming) 
-    except:
-        logging.error("Cannot process json, exiting")
-        motion.disconnect()
-        return 0
+    def listen(self):
+        logging.info('creating a socket') 
 
-    if 'gcode' in message:
-        motion.send(message['gcode'])
-        res = {'status': True}
+        context = zmq.Context() 
+        socket = context.socket(zmq.REP) 
 
-    elif 'moveRel' in message:
-        coords = message['moveRel']  
-        motion.send('G0 X{} Y{} Z{} F{}'.format(coords[0], coords[1], coords[2], 1000))
+        try:
+            socket.bind("tcp://{}:{}".format(self.host, self.port))  
+        except:
+            logging.error('Could not connect, exiting')
+            sys.exit(0)
 
+        while True: 
+            rcvdData = socket.recv().decode('utf-8') 
+            if len(rcvdData) > 1:
+                processed_result = self.processCommand(rcvdData)
+                message = json.dumps(processed_result).encode()
+                socket.send(message) 
 
-    elif 'moveAbs' in message: 
-        coords = message['moveAbs']
-        motion.send('G91')
-        motion.send('G0 X{} Y{} Z{} F{}'.format(coords[0], coords[1], coords[2], 1000))
-        motion.send('G90')
-    
-    elif 'getPosition' in message:
-        # parse position 
-        return 0
-
-    return res 
+            else:
+                logging.info('Disconnecting...')
+                socket.close()
+                logging.info('Disconnected')
+                break 
 
 
 while __name__ == '__main__':
-    logging.info('creating a socket') 
-
-    context = zmq.Context() 
-    socket = context.socket(zmq.REP) 
-
-    try:
-        socket.bind("tcp://{}:{}".format(HOST, PORT))  
-    except:
-        logging.error('Could not connect, exiting')
-        sys.exit(0)
-
-    while True: 
-        rcvdData = socket.recv().decode('utf-8') 
-        if len(rcvdData) > 1:
-            processed_result = processCommand2(rcvdData)
-            message = json.dumps(processed_result).encode()
-            socket.send(message)
-
-        else:
-            logging.info('Disconnecting...')
-            socket.close()
-            logging.info('Disconnected')
-            break 
-
-finally:
-    motion.close() 
-    socker.close()
+    # Start listening, but don't connect to the motion yet 
+    m = MotionServer()
+    m.listen() 
