@@ -1,4 +1,7 @@
 # bin/bash 
 source venv/bin/activate
-cd src/flask_server 
-python3 app.py 
+# Start two scripts co-currently and run in the background 
+# need to change sys.path.append('..'), it's running that from here. 
+python3 ./src/flask_server/app.py & 
+python3 ./src/hardware/MotionServerZMQ.py & 
+
