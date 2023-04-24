@@ -16,12 +16,14 @@ logging.basicConfig(level=logging.INFO)
 
 
 class MotionServer:
-    def __init__(self, serial_port='/dev/ttyACM1', test_mode=False, host='*', port='5678') -> None:
+    """
+    Accepts incoming JSON strings and parses them 
+    """
+    def __init__(self, serial_port='/dev/ttyACM0', test_mode=False, host='*', port='5678') -> None:
         self.serial_port = serial_port
         self.host = host
         self.port = port 
         self.test_mode = test_mode
-        self.motion = MotionController() 
         self.motion = MotionController(serial_port=self.serial_port, test_mode=self.test_mode) 
 
 

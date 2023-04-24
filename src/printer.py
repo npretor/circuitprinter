@@ -1,9 +1,13 @@
 import json
 import logging
 import os
+import time 
 from platform import machine 
-from hardware.MotionController import MotionController
+#from hardware.MotionController import MotionController
+from hardware.MotionClientZMQ import MotionClient
 from ArtworkParser import ArtworkParser
+import gpiozero 
+from gpiozero import Button 
 
 class Printer:
     def __init__(self):
@@ -13,13 +17,35 @@ class Printer:
         self.current_job = None
         self.currentToolNum = None
 
+        self.probe_pin=4
+        probe = Button(self.probe_pin) 
+
         self.process_recipes = None
         self.machine_settings = None 
 
         with open('../config/process_recipes.json','r') as f:
             self.process_recipes = json.load(f) 
+            
         with open('../config/machine_settings.json','r') as f:
             self.machine_settings = json.load(f) 
+        
+        self.toolConfigs = {
+            'tools': {
+                '0': {
+                    'abs_pizeo_z': 0.0 
+                }, 
+                '1': {
+                    'abs_pizeo_z': 0.0 
+                }, 
+                '2': {
+                    'abs_pizeo_z': 0.0 
+                }, 
+                '3': {
+                    'abs_pizeo_z': 0.0 
+                }                
+            },
+            'tool_to_bed_offset': 4.3 
+        }            
 
     # = = = = = = = = Motion related functions = = = = = = = = #
     def startup(self):
@@ -30,20 +56,67 @@ class Printer:
         return True
 
     def connect(self):
-        self.motion = MotionController() 
+        #self.motion = MotionController() 
+        self.motion = MotionClient() 
         try:
             self.motion.connect() 
         except: 
             return False 
 
-    def home(self):
-        self.motion.home()
+    def piezoProbe(self, toolnum=2):
+        """
 
-    # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+        """
+        # Connect to an input 
+
+        # Move to a probe location 
+
+        # Drop the head down slowly until contact 
+        self.motion.home()
+        time.sleep(10)    
+        # Run the unload. Grab the tool 
+        self.motion.send("T-1")
+        time.sleep(10)
+
+        self.motion.send("T2")
+        time.sleep(10)             
+        self.motion.send("G1 Z15 F1500")  
+        time.sleep(10) 
+        # Probe location: (315, 152, 15)         
+        probe_location = [315, 152, 15]
+        self.motion.send("G1 X{} Y{} Z{} F1500".format(probe_location[0], probe_location[1], probe_location[2])) 
+        time.sleep(10)
+
+        # Send motion commands as long as a bump is not detected 
+        self.motion.send('G91')  # set relative moves         
+
+        while True:
+            if self.probe.is_pressed:
+                break 
+            else:
+                self.motion.send('G1 Z-0.10 F500')  
+                time.sleep(0.1)
+        
+        # Save and print position
+        position = self.motion.get_absolute_position()
+        print(position)                
+        # Save and print position
+        position = self.motion.get_absolute_position()
+        print(position)
+
+        # Raise up 
+        self.motion.send('G1 Z3 F50') 
+
+        self.motion.send('G90')
+
+        # Unload tool 
+        self.motion.send("T-1")         
+
     def hardwareSpecificSetup(self):
         # Run machine-specific startup commands
         self.motion.send('M302 P1')    # Allow cold extrudes
 
+    # = = = = = = = = = = Process artwork and print = = = = = = = = = # 
     def parseDesign(self, filePath):
         """ Parse the file, return the path on a surface """
 
@@ -55,16 +128,15 @@ class Printer:
             return self.vectorArtwork 
         else:
             print("File type not supported") 
-
-    def stepperExtrusion(self, polylines, settings):
+    def compileStepperExtrude(self, polylines, settings):
         """
         Need to know: 
             Which extruder to use 
 
         """
-        return machine_code
+        return True
 
-    def pressureExtrusion(self, polylines, settings):
+    def compilePressureExtrude(self, polylines, settings):
         """
         Need to know: 
             Which gpio to switch 
@@ -136,18 +208,8 @@ class Printer:
         machine_code = []
         machine_code.append('T{}'.format(tool_number))
 
-
         machine_code.append('T-1')
         return machine_code 
-
-    def validateMachineCode(self, machine_code):
-        vm = self.virtualMotion()
-        for line in machine_code:
-            try:
-                vm.send(line)
-            except:
-                return False
-        return True 
 
     def saveProcess(self, gcode_list, path):
         """ 
@@ -166,7 +228,7 @@ class Printer:
 
         """
         # Get the tool
-        motion.send('T{}'.format(tool_number))
+        self.motion.send('T{}'.format(tool_number))
 
         if z_calibration == True:
             # TODO: Calibrate: 
@@ -185,7 +247,6 @@ class Printer:
         gcode_list = self.createMachineCode(line_list, 0, process_settings, ink_settings) 
         self.validateMachineCode(gcode_list)
         self.saveProcess(gcode_list, "./gcode/default.g") 
-
 
 
 class Tool:

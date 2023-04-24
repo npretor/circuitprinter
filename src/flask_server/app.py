@@ -5,9 +5,9 @@ Nathan Pretorius 2022
 from collections import defaultdict
 from flask import Flask, request, render_template, jsonify, redirect
 from flask.views import View, MethodView
-import sys
+import sys, time 
 
-sys.path.append('../')
+sys.path.append('..')
 import logging
 import glob, os 
 import json
@@ -29,11 +29,16 @@ logging.basicConfig(level=logging.INFO)
 
 #motion = MotionController(test_mode=False) 
 motion = MotionClient() 
+# try:
+#     motion.connect() 
+# except:
+#     logging.error('could not connect to motion hardware') 
+
 printer = Printer() 
 
 # move all motion control into printer, for now keep these here 
 
-#
+
 def silverPrintSetup(toolNumber=1, cal_location=[10, 17, 2]):
     """ Load the tool, move to calibration location """ 
     
@@ -53,12 +58,15 @@ def home():
         return render_template('home.html')
 
 
-# = = = = = = = = Print process = = = = = = = = # 
+
 # = = = = = = = = Upload        = = = = = = = = # 
 # = = = = = = = = Parse         = = = = = = = = # 
 # = = = = = = = = Config        = = = = = = = = # 
 # Config takes the attributes, and compiles the gcode 
 # = = = = = = = = Run           = = = = = = = = # 
+
+
+# = = = = = = = = Print process = = = = = = = = # 
 @app.route("/step1_upload", methods={"GET", "POST"}) 
 def step1_upload():
     if request.method == "POST":
@@ -131,7 +139,7 @@ def step3_config():
         }
 
         #gcode = printer.createMachineCode(tool_number, process_recipes[process_recipe_name], ink_data[ink_recipe_name])
-        printer.machineCode = printer.pressureExtrusion(polylines, settings) 
+        printer.machineCode = printer.compilePressureExtrusion(polylines, settings) 
 
         return redirect('/startPrint') 
     else:
@@ -151,6 +159,7 @@ def step3_config():
             ink_data = json.load(f)
             ink_list = [ink for ink in ink_data]         
         return render_template('step3_config.html', process_recipes=process_recipes, tool_numbers=tool_numbers, ink_list=ink_list) 
+
 
 @app.route("/saveLocation", methods={"POST"})
 def saveLocation():
@@ -177,49 +186,61 @@ def saveLocation():
 @app.route("/printCalibration", methods={"GET", "POST"})
 def printCalibration():
     if request.method == "POST":
-        print(request.form)
+        print(request.form) 
         
         if "x_value" in request.form:
-            logging.info("Moving x axis: ".format(request.form["x_value"]))
-            #motion.moveRel([request.form["x_value"], 0, 0]) 
-            motion.send(json.dumps({'gcode': 'G0 X{} Y0 Z0'.format(request.form["x_value"])}))
+            x = request.form["x_value"] 
+            logging.info("Moving x axis: {}".format(x)) 
+            motion.gcode('G91') 
+            motion.gcode('G0 X{} Y0 Z0'.format(x))   
+            motion.gcode('G90') 
+
         elif "y_value" in request.form:
-            logging.info("Moving y axis: ".format(request.form["y_value"]))
-            motion.moveRel([0, request.form["y_value"], 0])
+            y = request.form["y_value"] 
+            logging.info("Moving y axis: {}".format(y)) 
+            motion.gcode('G91') 
+            motion.gcode('G0 X0 Y{} Z0'.format(y))   
+            motion.gcode('G90') 
 
         elif "z_value" in request.form:
-            logging.info("Moving z axis: ".format(request.form["z_value"]))
-            motion.moveRel([0, 0, request.form["z_value"]]) 
+            z = request.form["z_value"] 
+            logging.info("Moving z axis: {}".format(z)) 
+            motion.gcode('G91') 
+            motion.gcode('G0 X0 Y0 Z{}'.format(z))   
+            motion.gcode('G90') 
 
         elif "saveLocation" in request.form:
-            locations = motion.get_absolute_position() 
-
-            # TODO Get current tool number, and save the current value as the tool z zero 
-            printer.machine_settings['tools'][str(request.form["toolNumber"])]['tip_zero'] = locations
-            logging.info("Saved new tool calibration location: {}".format(printer.machine_settings['tools'][str(request.form["toolNumber"])]['tip_zero']))
+            locations = motion.position() 
 
             if locations == None:
                 logging.error("Location parsing error")
             else:
-                logging.info("Saving XYZ: {} {} {}".format(locations[0], locations[1], locations[2])) 
+                logging.info("Saving XYZ: {} {} {}".format(locations[0], locations[1], locations[2]))             
+
+            # TODO Get current tool number, and save the current value as the tool z zero 
+            printer.machine_settings['tools'][str(request.form["toolNumber"])]['tip_zero'] = locations
+            zip_zero_location = printer.machine_settings['tools'][str(request.form["toolNumber"])]['tip_zero']
+            logging.info("Saved new tool calibration location: {}".format( zip_zero_location ))
+
+
 
         elif "getTool" in request.form:
             logging.info("Getting tool {}".format(request.form["toolNumber"]))
-            motion.send("T{}".format(request.form["toolNumber"])) 
+            motion.gcode("T{}".format(request.form["toolNumber"])) 
             printer.currentToolNum = int(request.form["toolNumber"])
 
         elif "replaceTool" in request.form:
             logging.info("Replacing current tool")
-            motion.send("T-1") 
+            motion.gcode("T-1") 
             printer.currentToolNum = None
 
         elif "gpio_on" in request.form:
             logging.info("GPIO {} on".format(request.form['gpio_on']))    
-            motion.send("M106 P{} S1.0".format(request.form['gpio_on']))  
+            motion.gcode("M106 P{} S1.0".format(request.form['gpio_on']))  
 
         elif "gpio_off" in request.form:
             logging.info("GPIO {} off".format(request.form['gpio_off']))   
-            motion.send("M106 P{} S0.0".format(request.form['gpio_off']))  
+            motion.gcode("M106 P{} S0.0".format(request.form['gpio_off']))  
 
         else:
             logging.error("Error, unknown motion request")
@@ -243,7 +264,7 @@ def startPrint():
         logging.info("Starting print")
         logging.info("Printing {} lines of code now".format(len(printer.machineCode)))  
         for line in printer.machineCode:
-            motion.send(line)         
+            motion.gcode(line)         
         return render_template('startPrint.html')
 
 
@@ -296,7 +317,6 @@ def update(project_id):
     else:
         return render_template('update.html', project=project)
 
-
 @app.route("/startup_system", methods={"GET", "POST"}) 
 def startup_system():
     """
@@ -307,21 +327,20 @@ def startup_system():
     else:    
         # Home the system
         if motion.connect():
-            print("Homing motion system")
-            motion.home()
-            motion.send("T-1")              # unload any tools 
-            print("System ready")
+            # Check if the system has been homed
+
+            logging.info("Homing motion system")
+            #motion.gcode('G28') 
+            logging.info("System ready")
         else:
-            print("Could not connect")
+            logging.error("Could not connect") 
 
         return redirect('/') 
-
 
 @app.route('/serve_artwork')
 def serve_artwork():
     simple_box = [(0,0), (10,0), (10,10), (0, 10), (0,0)] 
     return jsonify({'simple_box': simple_box}) 
-
 
 @app.route("/show_artwork", methods={"GET", "POST"})
 def show_artwork():
@@ -334,67 +353,12 @@ def show_artwork():
     else:    
         return render_template("show_artwork.html", simple_box=simple_box)
 
-
 @app.route("/settings", methods={"GET", "POST"}) 
 def settings():
     if request.method == "POST":
         pass
     else:
         return render_template('settings.html') 
-
-@app.route("/calibrate", methods={"GET", "POST"}) 
-def calibrate():
-    """
-    TODO: Verify we are connected first 
-    """
-    if request.method == "POST": 
-        print(request.form)
-        if "x_value" in request.form:
-            logging.info("moving x axis: ".format(request.form["x_value"]))
-            motion.send(json.dumps({'gcode': 'G0 X{} Y0 Z0'.format(request.form["x_value"])}))
-
-#            motion.moveRel([request.form["x_value"], 0, 0]) 
-
-        elif "y_value" in request.form:
-            logging.info("moving y axis: ".format(request.form["y_value"]))
-            motion.moveRel([0, request.form["y_value"], 0])
-
-        elif "z_value" in request.form:
-            logging.info("moving z axis: ".format(request.form["z_value"]))
-            motion.moveRel([0, 0, request.form["z_value"]]) 
-
-        elif "saveLocation" in request.form:
-            locations = motion.get_absolute_position() 
-
-            # TODO Get current tool number, and save the current value as the tool z zero 
-
-            if locations == None:
-                logging.error("location parsing error")
-            else:
-                logging.info("saving XYZ: {} {} {}".format(locations[0], locations[1], locations[2])) 
-        elif "getTool" in request.form:
-            logging.info("Getting tool {}".format(request.form["toolNumber"]))
-            motion.send("T{}".format(request.form["toolNumber"])) 
-
-        elif "replaceTool" in request.form:
-            logging.info("Replacing current tool")
-            motion.send("T-1") 
-
-        elif "gpio_on" in request.form:
-            logging.info("GPIO {} on".format(request.form['gpio_on']))    
-            motion.send("M106 P{} S1.0".format(request.form['gpio_on']))  
-
-        elif "gpio_off" in request.form:
-            logging.info("GPIO {} off".format(request.form['gpio_off']))   
-            motion.send("M106 P{} S0.0".format(request.form['gpio_off']))  
-
-        else:
-            logging.error("Error, unknown motion request")
-
-        return render_template('calibrate.html') 
-    else:
-        return render_template('calibrate.html') 
-
 
 
 if __name__ == "__main__":
