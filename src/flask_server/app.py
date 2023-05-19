@@ -3,7 +3,7 @@ Nathan Pretorius 2022
 """
 
 from collections import defaultdict
-from flask import Flask, request, render_template, jsonify, redirect
+from flask import Flask, request, render_template, jsonify, redirect, send_file
 from flask.views import View, MethodView
 import sys, time 
 
@@ -15,6 +15,7 @@ import threading
 from printer import Printer
 # from hardware.MotionController import MotionController
 from hardware.MotionClientZMQ import MotionClient
+from hardware.camera import Camera 
 
 # from flask_sqlalchemy import SQLAlchemy
 # from sqlalchemy.orm import declarative_base
@@ -35,8 +36,18 @@ motion = MotionClient()
 #     logging.error('could not connect to motion hardware') 
 
 printer = Printer() 
-
 # move all motion control into printer, for now keep these here 
+
+cam = None 
+def check_cam():
+    global cam
+    if cam == None:
+        cam = Camera()
+        try:
+            cam.open() 
+            return True
+        except:
+            return False
 
 
 def silverPrintSetup(toolNumber=1, cal_location=[10, 17, 2]):
@@ -71,16 +82,16 @@ def home():
 def step1_upload():
     if request.method == "POST":
         design_file_name = request.form['filename'] 
-        print(design_file_name) 
+        # logging.info(design_file_name) 
 
         design_path = os.path.join('../example_artwork', design_file_name) 
         surfacePath = printer.parseDesign(design_path) 
-        print(surfacePath)
+        # logging.info(surfacePath)
 
         return redirect('/step2_show_parsing') 
     else:
         filenames = os.listdir('../example_artwork')
-        print(filenames)
+        logging.info(filenames)
         return render_template('step1_upload.html', filenames=filenames)
 
 @app.route("/step2_show_parsing", methods={"GET", "POST"}) 
@@ -326,32 +337,40 @@ def startup_system():
         return redirect('/') 
     else:    
         # Home the system
-        if motion.connect():
+        motion.connect(test_mode=False)
             # Check if the system has been homed
 
-            logging.info("Homing motion system")
-            #motion.gcode('G28') 
-            logging.info("System ready")
-        else:
-            logging.error("Could not connect") 
+        logging.info("Homing motion system")
+        motion.gcode('G28') 
+        logging.info("System ready")
+
 
         return redirect('/') 
 
 @app.route('/serve_artwork')
 def serve_artwork():
-    simple_box = [(0,0), (10,0), (10,10), (0, 10), (0,0)] 
+    #simple_box = [(0,0), (10,0), (10,10), (0, 10), (0,0)] 
+    simple_box =  [(0,0), (0, 10), (10, 10), (0,0) ] 
     return jsonify({'simple_box': simple_box}) 
 
-@app.route("/show_artwork", methods={"GET", "POST"})
+@app.route("/show_artwork2", methods={"GET", "POST"})
 def show_artwork():
     #simple_box = [(0,0), (500,0), (500,500), (0, 500), (0,0)] 
     simple_box = [[0,0], [500, 0], [500,500], [0,500], [0,0]]
-
+    # simple_box = [[0,0], [500, 0], [500,500], [0,0]]
 
     if request.method == "POST":
-        return render_template("show_artwork.html", simple_box=simple_box)
+        return render_template("show_artwork2.html", simple_box=simple_box)
     else:    
-        return render_template("show_artwork.html", simple_box=simple_box)
+        return render_template("show_artwork2.html", simple_box=simple_box)
+
+@app.route("/cam_image")
+def cam_image():
+    global cam 
+    check_cam():
+    image_stream = cam.capture_stream() 
+    return send_file(image_stream, mimetype='image/png')
+
 
 @app.route("/settings", methods={"GET", "POST"}) 
 def settings():
@@ -362,4 +381,4 @@ def settings():
 
 
 if __name__ == "__main__":
-    app.run(debug=False) 
+    app.run(host='0.0.0.0', port=5000, debug=False)

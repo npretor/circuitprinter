@@ -7,6 +7,12 @@
             <div class="col"></div>
             <div class="col-6">
                 <p></p>
+                
+                <!-- Downward camera for calibration  -->
+                <div id="preview"><img id="preview_image" width=100%></div>
+                
+                <script src="{{ url_for('static', filename='cam_preview.js') }}"></script>
+                
 
                 <form action="/printCalibration" method="POST" name="printCalibration" id="printCalibration">
                     <h3>Select a tool</h3>
