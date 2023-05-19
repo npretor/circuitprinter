@@ -254,9 +254,9 @@ def printCalibration():
             motion.gcode("M106 P{} S0.0".format(request.form['gpio_off']))  
 
         else:
-            logging.error("Error, unknown motion request")
+            logging.error("Error, unknown motion request") 
         
-        return render_template("printCalibration.html")            
+        return render_template("printCalibration.html")  
 
     else:
         return render_template("printCalibration.html")
@@ -367,7 +367,7 @@ def show_artwork():
 @app.route("/cam_image")
 def cam_image():
     global cam 
-    check_cam():
+    check_cam()
     image_stream = cam.capture_stream() 
     return send_file(image_stream, mimetype='image/png')
 
