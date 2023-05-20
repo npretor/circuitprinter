@@ -198,6 +198,7 @@ def saveLocation():
 def printCalibration():
     if request.method == "POST":
         print(request.form) 
+        # import ipdb; ipdb.set_trace()
         
         if "x_value" in request.form:
             x = request.form["x_value"] 
