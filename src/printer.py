@@ -128,6 +128,7 @@ class Printer:
             return self.vectorArtwork 
         else:
             print("File type not supported") 
+
     def compileStepperExtrude(self, polylines, settings):
         """
         Need to know: 
@@ -138,16 +139,6 @@ class Printer:
 
     def compilePressureExtrude(self, polylines, settings):
         """
-        Need to know: 
-            Which gpio to switch 
-            Which tool to select 
-            Z zeroed height 
-            Print height 
-            Speed 
-            Start delay
-            Stop delay 
-            Retract height 
-
 
         """
         machine_code = []
