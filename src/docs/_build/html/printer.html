@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>printer module &#8212; circuitprinter 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="hardware package" href="hardware.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-printer">
+<span id="printer-module"></span><h1>printer module<a class="headerlink" href="#module-printer" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="printer.Printer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">printer.</span></span><span class="sig-name descname"><span class="pre">Printer</span></span><a class="reference internal" href="_modules/printer.html#Printer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#printer.Printer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="printer.Printer.compileMachineCode">
+<span class="sig-name descname"><span class="pre">compileMachineCode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">process_settings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ink_settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/printer.html#Printer.compileMachineCode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#printer.Printer.compileMachineCode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="printer.Printer.compilePressureExtrude">
+<span class="sig-name descname"><span class="pre">compilePressureExtrude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">polylines</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/printer.html#Printer.compilePressureExtrude"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#printer.Printer.compilePressureExtrude" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="printer.Printer.compileStepperExtrude">
+<span class="sig-name descname"><span class="pre">compileStepperExtrude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">polylines</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/printer.html#Printer.compileStepperExtrude"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#printer.Printer.compileStepperExtrude" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Need to know: </dt><dd><p>Which extruder to use</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="printer.Printer.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/printer.html#Printer.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#printer.Printer.connect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="printer.Printer.createMachineCode">
+<span class="sig-name descname"><span class="pre">createMachineCode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tool_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">process_recipe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ink_settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/printer.html#Printer.createMachineCode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#printer.Printer.createMachineCode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of strings which are lines of machine code</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="printer.Printer.hardwareSpecificSetup">
+<span class="sig-name descname"><span class="pre">hardwareSpecificSetup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/printer.html#Printer.hardwareSpecificSetup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#printer.Printer.hardwareSpecificSetup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="printer.Printer.parseDesign">
+<span class="sig-name descname"><span class="pre">parseDesign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filePath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/printer.html#Printer.parseDesign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#printer.Printer.parseDesign" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the file, return the path on a surface</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="printer.Printer.piezoProbe">
+<span class="sig-name descname"><span class="pre">piezoProbe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">toolnum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/printer.html#Printer.piezoProbe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#printer.Printer.piezoProbe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="printer.Printer.runProcess">
+<span class="sig-name descname"><span class="pre">runProcess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gcode_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tool_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_calibration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/printer.html#Printer.runProcess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#printer.Printer.runProcess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Are we doing calibration? Yes/No</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="printer.Printer.saveProcess">
+<span class="sig-name descname"><span class="pre">saveProcess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gcode_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/printer.html#Printer.saveProcess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#printer.Printer.saveProcess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the machine code, artwork, and settings to a file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="printer.Printer.startup">
+<span class="sig-name descname"><span class="pre">startup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/printer.html#Printer.startup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#printer.Printer.startup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="printer.Tool">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">printer.</span></span><span class="sig-name descname"><span class="pre">Tool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tool_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recipe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/printer.html#Tool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#printer.Tool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">circuitprinter</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ArtworkParser.html">ArtworkParser module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flask_server.html">flask_server package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html">hardware package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">printer module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">src</a><ul>
+      <li>Previous: <a href="hardware.html" title="previous chapter">hardware package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, nathan pretorius.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/printer.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

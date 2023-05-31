@@ -76,6 +76,24 @@ python3 app.py
 ```
 
 
+# Settings 
+### Machine settings: 
+    Which gpio to switch 
+    Which tool to select 
+    Z zeroed height 
+    
+### Process settings: 
+    Print height 
+    Speed 
+    Start delay 
+    Stop delay 
+    Retract height 
+### Pneumatic specific 
+### Extrusion specific 
+
+
+
+
 # Development stage 1 
 - Create a process step
     - Process name 
@@ -101,3 +119,20 @@ python3 app.py
     - tool 
     - Buttons( cancel or done )
 
+### Sphinx setup 
+Install sphinx and a theme 
+```
+python3 -m pip install Sphinx sphinx-rtd-theme
+mkdir docs && cd docs 
+sphinx-quickstart   # defaults for all 
+cd ../src/ 
+sphinx-apidoc -o docs .
+cd ../docs/ 
+make html
+```
+
+### 1. Change theme to sphinx-rtd-theme
+### 2. change extensions to: 
+```
+extensions = ['sphinx.ext.todo', 'sphinx.ext.viewcode', 'sphinx.ext.autodoc']
+```
