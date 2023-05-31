@@ -19,12 +19,12 @@ class MotionServer:
     """
     Accepts incoming JSON strings and parses them 
     """
-    def __init__(self, serial_port='/dev/ttyACM0', test_mode=False, host='*', port='5678') -> None:
+    def __init__(self, serial_port='/dev/ttyACM0', host='*', port='5678') -> None:
         self.serial_port = serial_port
         self.host = host
         self.port = port 
-        self.test_mode = test_mode
-        self.motion = MotionController(serial_port=self.serial_port, test_mode=self.test_mode) 
+        self.test_mode = None
+        self.motion = MotionController(serial_port=self.serial_port) 
 
 
     def processCommand(self, incoming):
@@ -35,7 +35,7 @@ class MotionServer:
             return {"res": False} 
 
         if "gcode" in message:
-            # Send a generic command and return reply and status 
+            """Send a generic command and return reply and status """
             res = self.motion.send(message['gcode']) 
             return {"res": res} 
 
@@ -43,7 +43,8 @@ class MotionServer:
             """ Connect or disconnect the hardware and return status """
             if message['connect']:
                 try:
-                    self.motion.connect()
+                    logging.info('Attempting to connect to hardware')
+                    self.motion.connect(message['test_mode'])
                     return {"res": True} 
                 except:
                     logging.error('Could not connect to hardware over serial')

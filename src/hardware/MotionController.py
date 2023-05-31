@@ -15,19 +15,20 @@ def open_serial(port, baudrate):
     return device
 
 class MotionController:
-    def __init__(self, serial_port='/dev/ttyACM0', baudrate=115200, test_mode=True):
-        self.test_mode=test_mode
+    def __init__(self, serial_port='/dev/ttyACM0', baudrate=115200):
+        self.test_mode = None
         self.baudrate = baudrate
         self.serial_port = serial_port
         self.device = None
         self.current_position = None
 
-    def connect(self):
+    def connect(self, test_mode=False):
         if self.test_mode:
             logging.info('Connected to virtual printer') 
             return True
         else:
             try:
+                logging.info('Connecting to real printer at {}'.format(self.serial_port))
                 self.device = open_serial(self.serial_port, self.baudrate)
                 return True
             except:
