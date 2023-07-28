@@ -2,13 +2,11 @@
 The goal of this project is to print additive circuit traces on the E3D and Jubilee toolchanging 3D printers
 
 
-
 ## Bill of materials: 
 <a href="https://docs.google.com/spreadsheets/d/1qsuu0mqhYLWQeWLX05LpEEylz75LFKVL712LdSZb1z4/edit?usp=sharing">link to BOM</a>
 
 
 ## Installation
-
 ### Install python dependencies 
 1. Install dependencies
 Setup a virtual environment and install python reqs 
@@ -76,51 +74,8 @@ python3 app.py
 ```
 
 
-# Settings 
-### Machine settings: 
-    Which gpio to switch 
-    Which tool to select 
-    Z zeroed height 
-    
-### Process settings: 
-    Print height 
-    Speed 
-    Start delay 
-    Stop delay 
-    Retract height 
-### Pneumatic specific 
-### Extrusion specific 
-
-
-
-
-# Development stage 1 
-- Create a process step
-    - Process name 
-    - Print settings recipe 
-    - File to print 
-    - Registration (manual for now) 
-- Run the process
-    - Parse the file 
-    - Create the machine code 
-    - Run the code 
-
-
-# Development stage 2 
-1. Create a project. Page contains: 
-    - form: project name 
-    - buttons: next, and cancel 
-2. Select a process step to add. Page contains: 
-    - Card button: Select from process options 
-    - Buttons( cancel or next )
-3. Select from dropdowns. Page contains: 
-    - recipe (for now don't filter types, ie don't give an error when incorrectly selected ) 
-    - process file 
-    - tool 
-    - Buttons( cancel or done )
-
 ### Sphinx setup 
-Install sphinx and a theme 
+1. Install sphinx and a theme 
 ```
 python3 -m pip install Sphinx sphinx-rtd-theme
 mkdir docs && cd docs 
@@ -130,9 +85,12 @@ sphinx-apidoc -o docs .
 cd ../docs/ 
 make html
 ```
-
-### 1. Change theme to sphinx-rtd-theme
-### 2. change extensions to: 
+2. change extensions to: 
 ```
 extensions = ['sphinx.ext.todo', 'sphinx.ext.viewcode', 'sphinx.ext.autodoc']
+```
+3. Add source directory path to conf.py by adding: 
+```
+import sys 
+sys.path.append("../../path/to/src_dir")
 ```
