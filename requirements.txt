@@ -19,3 +19,7 @@ ezdxf
 pcb-tools
 pcb-tools-extension
 shapely
+pyzmq
+
+Pillow 
+picamera 
