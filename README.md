@@ -1,6 +1,6 @@
 # Circuitprinter
 The goal of this project is to print additive circuit traces on the E3D and Jubilee toolchanging 3D printers
-![E3D toolchanger with printed UV material](E3D_lit_up_printing.jpeg) 
+![E3D toolchanger with printed UV material](Documentation/media/E3D_lit_up_printing.jpeg) 
 ![Latest extruder revision](Documentation/media/IMG_5449.jpeg) 
 
 
