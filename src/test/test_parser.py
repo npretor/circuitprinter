@@ -3,7 +3,7 @@ import sys
 sys.path.append('..') 
 
 from ArtworkParser import ArtworkParser 
-from printer import Printer
+from Printer import Printer
 
 
 p = Printer()
