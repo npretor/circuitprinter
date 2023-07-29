@@ -17,18 +17,19 @@ class Printer:
         self.current_job = None
         self.currentToolNum = None
 
-        self.probe_pin_number=4
-        self.probe = Button(self.probe_pin_number) 
+
 
         self.process_recipes = None
         self.machine_settings = None 
 
         with open('../config/process_recipes.json','r') as f:
             self.process_recipes = json.load(f) 
-            
+
         with open('../config/machine_settings.json','r') as f:
             self.machine_settings = json.load(f) 
-        
+
+        self.probe = Button(self.machine_settings['z_probe_pin'])  
+
         self.toolConfigs = {
             'tools': {
                 '0': {
@@ -59,7 +60,7 @@ class Printer:
         #self.motion = MotionController() 
         self.motion = MotionClient() 
         try:
-            self.motion.connect(test_mode=False)  
+            self.motion.connect(test_mode=False) 
             return True 
         except: 
             return False 
@@ -71,7 +72,7 @@ class Printer:
         except: 
             return False         
 
-    def piezoProbe(self, toolnum=2):
+    def piezoProbe(self, tool_number):
         """
         ## Order of operations 
         1. Home the motion system 
@@ -84,13 +85,11 @@ class Printer:
         7. Add the bed-to-probe offset and save 
 
 
-        Z 6.05 at the bed 
-        Z -1.4 at the z probe location  
-        delta is: +7.45 
+        Z 6.30 at the bed 
+        Z -3.20 at the z probe location  
+        bed - probe = 6.3 - -3.2
+        delta is: +9.50
         """
-
-        offset = 7.45
-
 
         # Move to a probe location 
 
@@ -103,15 +102,15 @@ class Printer:
         time.sleep(10)
 
         # Grab the tool 
-        self.motion.gcode(f"T{toolnum}") 
+        self.motion.gcode(f"T{tool_number}") 
         time.sleep(10) 
 
         # Raise up 
-        self.motion.gcode("G1 Z15 F1500")  
+        self.motion.gcode("G1 Z15 F1500") 
         time.sleep(10) 
 
         # Move to probe location 
-        probe_location = [235, 159, 15] 
+        probe_location = self.machine_settings["z_cal_location"] # [235, 159, 15] 
         self.motion.gcode("G1 X{} Y{} Z{} F1500".format(probe_location[0], probe_location[1], probe_location[2])) 
         time.sleep(10) 
 
@@ -123,7 +122,7 @@ class Printer:
             if self.probe.is_pressed:
                 break 
             else:
-                self.motion.gcode('G1 Z-0.10 F500')  
+                self.motion.gcode('G1 Z-0.10 F500') 
                 time.sleep(0.2) 
         
         # Save and print position
