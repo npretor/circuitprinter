@@ -1,7 +1,0 @@
-sql\_object\_schema\_creation module
-====================================
-
-.. automodule:: sql_object_schema_creation
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -1,7 +1,0 @@
-printer2 module
-===============
-
-.. automodule:: printer2
-   :members:
-   :undoc-members:
-   :show-inheritance:
