@@ -11,3 +11,15 @@ The goal of this project is to print additive circuit traces on the E3D and Jubi
 
 ## Installation
 [Install docs](https://github.com/npretor/circuitprinter/tree/main/src#installation)
+
+## Startup 
+### Start the motion server 
+```
+cd src/hardware
+sudo python3 MotionClientZMQ.py
+```
+
+### Start the Flask server 
+```
+python3 app.py 
+```
