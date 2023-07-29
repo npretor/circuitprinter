@@ -17,8 +17,8 @@ class Printer:
         self.current_job = None
         self.currentToolNum = None
 
-        self.probe_pin=4
-        probe = Button(self.probe_pin) 
+        self.probe_pin_number=4
+        self.probe = Button(self.probe_pin_number) 
 
         self.process_recipes = None
         self.machine_settings = None 
@@ -32,20 +32,20 @@ class Printer:
         self.toolConfigs = {
             'tools': {
                 '0': {
-                    'abs_pizeo_z': 0.0 
+                    'abs_piezo_z': 0.0 
                 }, 
                 '1': {
-                    'abs_pizeo_z': 0.0 
+                    'abs_piezo_z': 0.0 
                 }, 
                 '2': {
-                    'abs_pizeo_z': 0.0 
+                    'abs_piezo_z': 0.0 
                 }, 
                 '3': {
-                    'abs_pizeo_z': 0.0 
+                    'abs_piezo_z': 0.0 
                 }                
             },
             'tool_to_bed_offset': 4.3 
-        }            
+        } 
 
     # = = = = = = = = Motion related functions = = = = = = = = #
     def startup(self):
@@ -59,62 +59,90 @@ class Printer:
         #self.motion = MotionController() 
         self.motion = MotionClient() 
         try:
-            self.motion.connect() 
+            self.motion.connect(test_mode=False)  
+            return True 
         except: 
             return False 
+        
+    def disconnect(self):
+        try:
+            self.motion.close() 
+            return True
+        except: 
+            return False         
 
     def piezoProbe(self, toolnum=2):
         """
+        ## Order of operations 
+        1. Home the motion system 
+        2. Grab the tool 
+        3. Raise up, move the probe location 
+        4. Set relative moves 
+        5. While a probe is not triggered, drop down in increments of 100um. 
+            (Change this to be smaller when the design is fixed)
+        6. Get the machine position at that point, and save. 
+        7. Add the bed-to-probe offset and save 
 
+
+        Z 6.05 at the bed 
+        Z -1.4 at the z probe location  
+        delta is: +7.45 
         """
-        # Connect to an input 
+
+        offset = 7.45
+
 
         # Move to a probe location 
 
         # Drop the head down slowly until contact 
-        self.motion.home()
+        self.motion.gcode('G28')
         time.sleep(10)    
-        # Run the unload. Grab the tool 
-        self.motion.send("T-1")
+
+        # Run the unload. 
+        self.motion.gcode("T-1")
         time.sleep(10)
 
-        self.motion.send("T2")
-        time.sleep(10)             
-        self.motion.send("G1 Z15 F1500")  
+        # Grab the tool 
+        self.motion.gcode(f"T{toolnum}") 
         time.sleep(10) 
-        # Probe location: (315, 152, 15)         
-        probe_location = [315, 152, 15]
-        self.motion.send("G1 X{} Y{} Z{} F1500".format(probe_location[0], probe_location[1], probe_location[2])) 
-        time.sleep(10)
+
+        # Raise up 
+        self.motion.gcode("G1 Z15 F1500")  
+        time.sleep(10) 
+
+        # Move to probe location 
+        probe_location = [235, 159, 15] 
+        self.motion.gcode("G1 X{} Y{} Z{} F1500".format(probe_location[0], probe_location[1], probe_location[2])) 
+        time.sleep(10) 
+
+        # set relative moves for the drop down   
+        self.motion.gcode('G91')  
 
         # Send motion commands as long as a bump is not detected 
-        self.motion.send('G91')  # set relative moves         
-
         while True:
             if self.probe.is_pressed:
                 break 
             else:
-                self.motion.send('G1 Z-0.10 F500')  
-                time.sleep(0.1)
+                self.motion.gcode('G1 Z-0.10 F500')  
+                time.sleep(0.2) 
         
         # Save and print position
-        position = self.motion.get_absolute_position()
-        print(position)                
-        # Save and print position
-        position = self.motion.get_absolute_position()
-        print(position)
+        position = self.motion.position() 
+        logging.info(position) 
 
         # Raise up 
-        self.motion.send('G1 Z3 F50') 
+        self.motion.gcode('G1 Z3 F50') 
 
-        self.motion.send('G90')
+        # Set to absolute movements
+        self.motion.gcode('G90') 
 
         # Unload tool 
-        self.motion.send("T-1")         
+        self.motion.gcode("T-1")   
+
 
     def hardwareSpecificSetup(self):
         # Run machine-specific startup commands
-        self.motion.send('M302 P1')    # Allow cold extrudes
+        self.motion.gcode('M302 P1')    # Allow cold extrudes
 
     # = = = = = = = = = = Process artwork and print = = = = = = = = = # 
     def parseDesign(self, filePath):
