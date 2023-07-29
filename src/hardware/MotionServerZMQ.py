@@ -66,10 +66,12 @@ class MotionServer:
 
         try:
             socket.bind("tcp://{}:{}".format(self.host, self.port))  
+
         except:
-            logging.error('Could not connect, exiting')
+            logging.error('Could not connect, exiting') 
             sys.exit(0)
 
+        logging.info('Socket created at %s %s', self.host, self.port)
         while True: 
             rcvdData = socket.recv().decode('utf-8') 
             if len(rcvdData) > 1:
