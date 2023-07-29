@@ -6,7 +6,7 @@
 import sys, os  
 sys.path.append('..')
 import logging 
-from printer import Printer
+from Printer import Printer
 from hardware.MotionClientZMQ import MotionClient
 
 
