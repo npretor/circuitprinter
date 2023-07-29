@@ -12,7 +12,7 @@ import logging
 import glob, os 
 import json
 import threading
-from printer import Printer
+from Printer import Printer
 # from hardware.MotionController import MotionController
 from hardware.MotionClientZMQ import MotionClient
 from hardware.camera import Camera 
@@ -84,13 +84,13 @@ def step1_upload():
         design_file_name = request.form['filename'] 
         # logging.info(design_file_name) 
 
-        design_path = os.path.join('../example_artwork', design_file_name) 
+        design_path = os.path.join('../examples/artwork', design_file_name) 
         surfacePath = printer.parseDesign(design_path) 
         # logging.info(surfacePath)
 
         return redirect('/step2_show_parsing') 
     else:
-        filenames = os.listdir('../example_artwork')
+        filenames = os.listdir('../examples/artwork')
         logging.info(filenames)
         return render_template('step1_upload.html', filenames=filenames)
 
@@ -266,8 +266,6 @@ def printCalibration():
 def startPrint():
     if request.method == "POST":
 
-
-
         return render_template('startPrint.html')
     else:    
         # Assumes the tool is loaded 
@@ -382,4 +380,4 @@ def settings():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    app.run(host='0.0.0.0', port=5000, debug=True)
