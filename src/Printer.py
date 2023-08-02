@@ -117,29 +117,32 @@ class Printer:
 
         # set relative moves for the drop down   
         self.motion.gcode('G91')  
+        self.motion.gcode('G1 Z-5')
 
         # Send motion commands as long as a bump is not detected 
         while True:
             if self.probe.is_pressed:
                 break 
             else:
-                self.motion.gcode('G1 Z-0.10 F500') 
+                self.motion.gcode('G1 Z-0.050 F500') 
                 time.sleep(0.2) 
         
         # Save and print position
         position = self.motion.position() 
+        logging.info("Position: ")
         logging.info(position) 
 
         self.machine_settings["tools"][str(tool_number)]["tip_zero"] = position 
 
         # Raise up 
-        self.motion.gcode('G1 Z3 F50') 
+        self.motion.gcode('G1 Z10 F50') 
 
         # Set to absolute movements
         self.motion.gcode('G90') 
 
         # Unload tool 
         self.motion.gcode("T-1")   
+        self.motion.gcode("G1 Z5")
 
     def hardwareSpecificSetup(self):
         '''Run machine-specific startup commands here'''
@@ -169,6 +172,8 @@ class Printer:
         4. Pressure off 
         5. Lift up to rapid height (might need to double back to prevent trailing) 
         """
+        self.connect()
+
         polylines = [
             [[0,0],[0,10]],
             [[2,0],[2,10]],
@@ -177,18 +182,18 @@ class Printer:
             [[8,0],[8,10]]
         ] 
         # Rapid and origin 
-        bed_origin = self.machine_settings["printbed_origin"] 
-        rapid_height = self.machine_settings["rapid_height"] 
-        rapid_speed = self.machine_settings["rapid_speed"] 
-        rapid_speed_z = self.machine_settings["rapid_speed_z"] 
+        bed_origin      = self.machine_settings["printbed_origin"] 
+        rapid_height    = self.machine_settings["rapid_height"] 
+        rapid_speed     = self.machine_settings["rapid_speed"] 
+        rapid_speed_z   = self.machine_settings["rapid_speed_z"] 
 
         # Print height calculations 
-        z_probe_offset= self.machine_settings["probe_to_bed_z_offset"]
-        substrate_height = self.machine_settings["substrate_height"]
-        print_height = self.machine_settings["print_height"]                
+        z_probe_offset      = self.machine_settings["probe_to_bed_z_offset"]
+        substrate_height    = self.machine_settings["substrate_height"]
+        print_height        = self.machine_settings["print_height"] 
 
-        tip_zero = self.machine_settings["tools"][str(tool_number)]["tip_zero"]
-        print_z_height = tip_zero = z_probe_offset + substrate_height + print_height
+        tip_zero = self.machine_settings["tools"][str(tool_number)]["tip_zero"][2]
+        print_z_height = tip_zero + z_probe_offset + substrate_height + print_height
 
         # Print parameters 
         print_speed = self.machine_settings["print_speed"]
@@ -196,6 +201,9 @@ class Printer:
         kick = 1 #mm  
         retract = 0.5
 
+        # Grab the tool: 
+        self.motion.gcode('T2') 
+        
         # = = = = = = = Start movement = = = = = = = # 
         # Start location should be the print origin coordinate 
         
@@ -204,27 +212,29 @@ class Printer:
 
         for polyline in polylines:
             # Rapid to starting location, at rapid Z height 
-            self.motion.gcode('G0 X{} Y{} Z{} F1000'.format(polyline[0][0], polyline[0][1], rapid_height, rapid_speed))  
+            self.motion.gcode('G0 X{} Y{} Z{} F1000'.format(bed_origin[0]+polyline[0][0], bed_origin[1]+polyline[0][1], rapid_height, rapid_speed))  
 
             # Drop down to print height at z_rapid_speed
             self.motion.gcode('G1 Z{} F{}'.format(print_z_height, rapid_speed_z))         
 
             # Start extruding with a kick 
-            # self.motion.gcode('G1 E{}'.format(kick))  
+            self.motion.gcode('G1 E{}'.format(kick))  
 
             # Delay 
-            #self.motion.gcode('G4 {}'.format(delay_time)) 
+            self.motion.gcode('G4 {}'.format(delay_time)) 
 
             # Move to each successive point 
             for point in polyline[1:]:
-                self.motion.gcode('G0 X{} Y{} F{}'.format(point[0],point[0], print_speed)) 
+                self.motion.gcode('G0 X{} Y{} F{}'.format(bed_origin[0]+point[0], bed_origin[1]+point[1], print_speed)) 
 
             # Retract 
-            # self.motion.gcode('G1 E-{}'.format(retract))  
+            self.motion.gcode('G1 E-{}'.format(retract))  
             
             # Raise up to rapid Z height 
-            self.motion.gcode('G0 Z{} F{}}'.format(rapid_height, rapid_speed))  
+            self.motion.gcode('G0 Z{} F{}'.format(rapid_height, rapid_speed))  
 
+
+        self.motion.gcode('T-1')
 
 
             

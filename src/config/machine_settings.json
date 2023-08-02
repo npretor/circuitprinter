@@ -3,33 +3,33 @@
         "1": { 
             "name": "Pneumatic extruder 1",
             "type": "pressure_extruder",
-            "tip_zero": [0,0, 0.0, 0.0] 
+            "tip_zero": [0.0, 0.0, 0.0] 
         }, 
         "2": {
             "name": "Pneumatic extruder 2",            
             "type": "pressure_extruder",
-            "tip_zero": [0,0, 0.0, 0.0] 
+            "tip_zero": [235.0, 159.0, -4.2] 
         }, 
         "3": {
             "name": "Stepper extruder 3",            
             "type": "stepper_extruder",
-            "tip_zero": [0,0, 0.0, 0.0] 
+            "tip_zero": [0.0, 0.0, 0.0] 
         }, 
         "0": {
             "name": "RPI HQ Camera",         
             "type": "camera",   
-            "tip_zero": [0,0, 0.0, 0.0] 
+            "tip_zero": [0.0, 0.0, 0.0] 
         }
     },
     "z_cal_location":   [235,   159, 15 ], 
-    "printbed_origin":       [23.0,  31.0    ],
+    "printbed_origin":       [19.0,  27.0    ],
     "probe_to_bed_z_offset": 9.50,
     "z_probe_pin":          4,
     "rapid_height":         12.0,
     "rapid_speed":          5000,
     "rapid_speed_z":        500,
     "print_height":         0.050,
-    "print_speed":          4,
+    "print_speed":          500,
     "substrate_height":     0.050,
     "light_control_pin":    0,
     "units": "mm"
