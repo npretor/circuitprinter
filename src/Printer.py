@@ -148,7 +148,7 @@ class Printer:
         '''Run machine-specific startup commands here'''
         self.motion.gcode('M302 P1')    # Allow cold extrudes
 
-    def easy_print(self, tool_number=2):
+    def easy_print(self, tool_number=2, z_override=None):
         """
         # Easy print of a test pattern
         ### Z height calculations 
@@ -188,6 +188,7 @@ class Printer:
         rapid_speed_z   = self.machine_settings["rapid_speed_z"] 
 
         # Print height calculations 
+        # Positive moves the bed down 
         z_probe_offset      = self.machine_settings["probe_to_bed_z_offset"]
         substrate_height    = self.machine_settings["substrate_height"]
         print_height        = self.machine_settings["print_height"] 
@@ -195,11 +196,15 @@ class Printer:
         tip_zero = self.machine_settings["tools"][str(tool_number)]["tip_zero"][2]
         print_z_height = tip_zero + z_probe_offset + substrate_height + print_height
 
+        if z_override is not None:
+            print_z_height = z_override
+            rapid_height = z_override + 3
+
         # Print parameters 
         print_speed = self.machine_settings["print_speed"]
         delay_time = 100 # milliseconds
-        kick = 1 #mm  
-        retract = 0.5
+        kick = .25 #mm  
+        retract = 0.15
 
         # Grab the tool: 
         self.motion.gcode('T2') 
@@ -235,10 +240,6 @@ class Printer:
 
 
         self.motion.gcode('T-1')
-
-
-            
-
         
 
 
