@@ -12,7 +12,6 @@ from hardware.MotionClientZMQ import MotionClient
 
 offset = 7.45
 
-
 probe_pin=4
 probe = Button(probe_pin) 
 
@@ -37,7 +36,7 @@ motion.gcode("G1 Z15 F1500")
 time.sleep(10) 
 # Probe location: (315, 152, 15) 
 
-probe_location = [315, 152, 15]
+probe_location = [235, 159, 15] 
 motion.gcode("G1 X{} Y{} Z{} F1500".format(probe_location[0], probe_location[1], probe_location[2])) 
 time.sleep(10)
 
