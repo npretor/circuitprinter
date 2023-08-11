@@ -24,13 +24,13 @@
     "z_cal_location":   [235,   159, 15 ], 
     "printbed_origin":       [19.0,  27.0    ],
     "probe_to_bed_z_offset": 9.50,
-    "z_probe_pin":          4,
     "rapid_height":         12.0,
-    "rapid_speed":          5000,
-    "rapid_speed_z":        500,
+    "rapid_speed":          7500,
+    "rapid_speed_z":        1000,
     "print_height":         0.050,
     "print_speed":          500,
     "substrate_height":     0.050,
-    "light_control_pin":    0,
+    "z_probe_pin":          2,
+    "light_control_pin":    19,
     "units": "mm"
 } 

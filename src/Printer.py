@@ -5,6 +5,7 @@ import time
 from platform import machine 
 #from hardware.MotionController import MotionController
 from hardware.MotionClientZMQ import MotionClient
+from hardware.LightController import LightController
 from ArtworkParser import ArtworkParser
 import gpiozero 
 from gpiozero import Button 
@@ -29,6 +30,7 @@ class Printer:
             self.machine_settings = json.load(f) 
 
         self.probe = Button(self.machine_settings['z_probe_pin'])  
+        self.side_lights = LightController(self.machine_settings['light_control_pin'])
 
         self.toolConfigs = {
             'tools': {
@@ -181,6 +183,18 @@ class Printer:
             [[6,0],[6,10]],
             [[8,0],[8,10]]
         ] 
+
+        polylines = [
+            [[10,0],[10,90]],
+            [[20,0],[20,90]],
+            [[30,0],[30,90]],
+            [[40,0],[40,90]],
+            [[50,0],[50,90]],
+            [[60,0],[60,90]],
+            [[70,0],[70,90]],
+            [[80,0],[80,90]],
+        ] 
+
         # Rapid and origin 
         bed_origin      = self.machine_settings["printbed_origin"] 
         rapid_height    = self.machine_settings["rapid_height"] 
@@ -202,9 +216,12 @@ class Printer:
 
         # Print parameters 
         print_speed = self.machine_settings["print_speed"]
-        delay_time = 100 # milliseconds
-        kick = .25 #mm  
-        retract = 0.15
+        delay_time = 50 # milliseconds
+        kick = .15 #mm  
+        retract = 0.13
+
+        # Turn the lights on
+        self.side_lights.on()
 
         # Grab the tool: 
         self.motion.gcode('T2') 
@@ -212,12 +229,15 @@ class Printer:
         # = = = = = = = Start movement = = = = = = = # 
         # Start location should be the print origin coordinate 
         
+        # Apply bed mesh adjustment
+        self.motion.gcode('G29 S1')
+
         # Rapid to printbed origin at rapid_height, rapid_speed 
         self.motion.gcode('G0 X{} Y{} Z{} F{}'.format(bed_origin[0], bed_origin[0], rapid_height, rapid_speed))  
 
         for polyline in polylines:
             # Rapid to starting location, at rapid Z height 
-            self.motion.gcode('G0 X{} Y{} Z{} F1000'.format(bed_origin[0]+polyline[0][0], bed_origin[1]+polyline[0][1], rapid_height, rapid_speed))  
+            self.motion.gcode('G0 X{} Y{} Z{} F{}'.format(bed_origin[0]+polyline[0][0], bed_origin[1]+polyline[0][1], rapid_height, rapid_speed))  
 
             # Drop down to print height at z_rapid_speed
             self.motion.gcode('G1 Z{} F{}'.format(print_z_height, rapid_speed_z))         
@@ -238,8 +258,10 @@ class Printer:
             # Raise up to rapid Z height 
             self.motion.gcode('G0 Z{} F{}'.format(rapid_height, rapid_speed))  
 
-
+        # Disable mesh bed leveling 
+        self.motion.gcode('G29 S2')
         self.motion.gcode('T-1')
+        self.side_lights.off()
         
 
 
