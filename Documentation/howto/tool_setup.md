@@ -22,7 +22,7 @@ The order of operations in the config file is as follows:
 
 ## Adding a screw paste extruder 
 (assumes Duet, Duex5,  Rep-rap firmware 3+ )
-1. Add the tool: <a href="https://docs.duet3d.com/User_manual/Reference/Gcodes#m563-define-or-remove-a-tool"> link </a> and choose a slot: I'm choosing the third slot from the right 
+1. Add the tool: <a href="https://docs.duet3d.com/User_manual/Reference/Gcodes#m563-define-or-remove-a-tool"> link </a> and choose a slot: I'm choosing the third slot from the right viewed from the back 
 2. Set drive direction 
     ```
     M569 P5 S1   # 

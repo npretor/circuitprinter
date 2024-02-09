@@ -19,3 +19,17 @@ $ gpio -g mode ___whatever____ is broken for pwm setting. Currently using full p
 * Fix the z probing - it's currently not precise enough, so I'm manually zeroing 
 * Make a second extruder 
 
+### Test prints: 
+* Seeed Studio Xiao + battery + heart rate sensor 
+
+* Base: Seeed Studio Xiao BLE + battery 
+    * Sleep: accelerometer, microphone, heart rate monitor 
+    * LED extravaganza 
+    * Soil moisture monitor 
+
+* Base STMM32F411
+    Flight controller 
+
+* Stepper motor controller 
+* MOSFET switch 
+* USB power supply (from battery) 
