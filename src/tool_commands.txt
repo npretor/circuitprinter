@@ -1,0 +1,82 @@
+
+; = = = = = = = = = = = = Grab tool = = = = = = = = = = = = ;
+; tpre0.g
+; called before tool 0 is selected
+
+;Unlock Coupler
+M98 P"/macros/Coupler - Unlock"
+
+;Move to location
+G1 X-10.5 Y200 F50000
+
+;Move in
+G1 X-10.5 Y213 F50000
+
+;Collect
+G1 X-10.5 Y225 F2500
+
+;Close Coupler
+M98 P"/macros/Coupler - Lock"
+
+;WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING!
+;if you are using non-standard length hotends ensure the bed is lowered enough BEFORE undocking the tool!
+G91
+G1 Z10 F1000
+G90
+
+;Move Out
+G1 X-10.5 Y150 F4000
+
+
+
+
+; = = = = = = = = = = = = Replace tool = = = = = = = = = = = = ;
+; tfree0.g
+; called when tool 0 is freed
+
+;Drop the bed
+G91
+G1 Z4 F1000
+G90
+
+;Purge nozzle
+;M98 P"purge.g"
+
+;Move In
+G53 G1 X-10.5 Y150 F50000
+G53 G1 X-10.5 Y195 F5000
+G53 G1 X-10.5 Y213 F5000
+G53 G1 X-10.5 Y225 F5000
+
+;Open Coupler
+M98 P"/macros/Coupler - Unlock"
+
+;fan off
+M106 P2 S0
+
+;Move Out
+G53 G1 X-10.5 Y175 F5000
+
+
+; = = = = = = = = = = = = Coupler unlock = = = = = = = = = = = = ;
+G1 C241 F10000
+M400
+
+
+; = = = = = = = = = = = = Coupler lock = = = = = = = = = = = = ;
+G1 C40 F10000
+M400
+
+
+; = = = = = = = = = = = = Home all = = = = = = = = = = = = ;
+; called to home all axes
+
+;M98 Phomec.g			; Home C
+
+M98 Phomey.g			; Home Y
+
+M98 Phomex.g			; Home X
+
+M98 Phomez.g			; Home Z
+
+G1 X150 Y-50 F15000		; Park
