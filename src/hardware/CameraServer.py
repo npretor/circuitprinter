@@ -1,6 +1,7 @@
 # run this program on each RPi or Jetson to send a labelled image stream
 import socket
 import time
+import logging
 import imagezmq
 import nanocamera as nano 
 import cv2 as cv
@@ -33,12 +34,12 @@ class CameraServer:
 
     def save_image(self, image_name):
         # Get image from camera 
-        image = camera.read() 
+        image = self.camera.read() 
 
         # Save image 
         cv.imwrite(image_name, image) 
 
-        logging.info(f"Saved to cache:{image_path}")
+        logging.info(f"Saved to cache: {image_name}")
 
         # Add to the cache 
         self.image_cache.append(image_name)

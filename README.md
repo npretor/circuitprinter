@@ -27,6 +27,7 @@ python3 app.py
 
 
 ### Camera testing 
-1. Start the motion server. This connects to the motion, and initializes the camera client 
-2. Run the test workflow script. Images should be saved to the cache folder 
+1. Start the motion server in the docker container. This connects to the motion, and initializes the camera client. 
+2. Run the test workflow script in another script in the container. Images should be saved to the cache folder 
+    ```docker exec -it  b0c3ee90d132 /bin/bash```
 3. Test sending, images should be received and saved, but that hasn't been written yet 

@@ -10,6 +10,7 @@ import json
 import zmq
 import sys 
 from MotionController import MotionController 
+from CameraServer import CameraServer
 
 
 logging.basicConfig(level=logging.INFO)
@@ -56,23 +57,23 @@ class MotionServer:
 
         # Camera image saving and sending 
         elif "start_camera" in message:
-            camera.start_camera() 
+            self.camera.start_camera() 
             return {"res": True} 
 
         elif "stop_camera" in message:
-            camera.stop_camera() 
+            self.camera.stop_camera() 
             return {"res": True} 
 
         elif "save_image" in message:
-            image_name = messages["save_image"] 
-            status = camera.save_image(image_name) 
+            image_name = message["save_image"] 
+            status = self.camera.save_image(image_name) 
             return {"res": status} 
 
         elif "send_one_image" in message:            
-            status = camera.send_one_image
+            status = self.camera.send_one_image
             return {"res": True} 
 
-        elif "cache_status" in messages:
+        elif "cache_status" in message:
             return {"res": len(self.camera.image_cache)} 
 
         else:

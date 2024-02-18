@@ -13,10 +13,13 @@ Image comparison
 """
 
 import os 
+import time 
 import uuid 
+import logging 
 
 from hardware.MotionClientZMQ import MotionClient
-from AreaSegmentation import simple_segment
+from Configs import MatrixDeviceLayout
+# from image_procesing.AreaSegmentation import simple_segment
 
 logging.basicConfig(level=logging.INFO) 
 
@@ -44,12 +47,17 @@ def project_setup(name, steps, root_dir):
 
 project_setup('test3', ['segment', 'stitch'], "../data")
 
+m_layout = MatrixDeviceLayout(2,2)
 
 class Scan:
-    def __init__(self, MatrixDeviceLayout, CameraConfig, LightConfig):
-        self.camera_config = CameraConfig
-        self.light_config = LightConfig
-        self.scan_locations = MatrixDeviceLayout.mock_generate() 
+    # def __init__(self, MatrixDeviceLayout, CameraConfig, LightConfig):
+    #     self.camera_config = CameraConfig
+    #     self.light_config = LightConfig
+    #     self.scan_locations = MatrixDeviceLayout.mock_generate() 
+    #     self.motion = None 
+
+    def __init__(self):
+        self.scan_locations = m_layout.mock_generate() 
         self.motion = None 
 
     def start_hardware(self, address='127.0.0.1'):
@@ -64,17 +72,23 @@ class Scan:
         """
 
         """
-
-        camera_z_location  = focuz_z_locationx 
+        focuz_z_locationx = 100
+        camera_z_location = focuz_z_locationx 
 
         logging.info("Initializing")
         # motion.gcode(f"G1 X{} Y{} Z{} F5000 ") 
-        time.sleep(10)
+
+        self.motion.start_camera()
+        time.sleep(5)
 
         for i, location in enumerate(self.scan_locations):            
             print(location) 
             print('saving image', i)
-            camera_client.save_image(f"{i}.jpg")
+            self.motion.save_image(f"{i}.jpg")
 
-        self.camera.close() 
-        self.motion.close() 
+        self.motion.disconnect() 
+
+if __name__ == "__main__":
+    scanner = Scan() 
+    scanner.start_hardware()
+    scanner.start_scanning() 

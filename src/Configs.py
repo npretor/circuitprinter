@@ -2,26 +2,26 @@
 All units are millimeters unless otherwise specified
 """
 
-from dataclasses import dataclass
+# from dataclasses import dataclass
 
-@dataclass 
-class Camera:
-    """Camera settings"""
-    name: str 
-    exposure: float 
-    shutter_speed: float 
+# @dataclass 
+# class Camera:
+#     """Camera settings"""
+#     name: str 
+#     exposure: float 
+#     shutter_speed: float 
     
-    focus_distance: float 
-    focuz_z_location: float
-    pixels_per_millimeter: float 
-    usable_area: tuple 
+#     focus_distance: float 
+#     focuz_z_location: float
+#     pixels_per_millimeter: float 
+#     usable_area: tuple 
  
 
-@dataclass 
-class Lights:
-    """Light settings"""
-    side_lights_on: bool = True 
-    ring_light_on: bool = False 
+# @dataclass 
+# class Lights:
+#     """Light settings"""
+#     side_lights_on: bool = True 
+#     ring_light_on: bool = False 
 
 
 

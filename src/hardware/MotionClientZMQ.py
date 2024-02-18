@@ -36,6 +36,12 @@ class MotionClient:
         return self.send(json.dumps(json_message)) 
     
     # Camera-specific requests 
+    def start_camera(self):
+        return self.send(json.dumps({'start_camera': True}))     
+    
+    def stop_camera(self):
+        return self.send(json.dumps({'stop_camera': True}))             
+
     def save_image(self, image_name):
         return self.send(json.dumps({'save_image': image_name})) 
 
