@@ -25,8 +25,6 @@ def simple_segment(
 
 
 
-
-
 """
 
 Get bounding box 

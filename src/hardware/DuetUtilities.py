@@ -8,7 +8,7 @@ def get_duet_port():
     duet_port = None 
 
     for port, desc, hwid in sorted(ports):
-        print("   {}: {} [{}]".format(port, desc, hwid)) 
+        # print("   {}: {} [{}]".format(port, desc, hwid)) 
         if desc == 'Duet':
             duet_port = port 
 
@@ -17,12 +17,12 @@ def get_duet_port():
 def get_duet_ip(serial_port):
 
     if serial_port is None:
-        print('Invalid port:', serial_port)
+        print('ERROR: Invalid port:', serial_port)
         return []
     try:
         ser = serial.Serial(serial_port, 115200, timeout=1)
     except:
-        print("could not open port: ",serial_port)
+        print("ERROR: could not open port: ",serial_port)
         return []
     
     ser.readline()
@@ -30,7 +30,7 @@ def get_duet_ip(serial_port):
     response = str(ser.readline())
     ser.close()
 
-    print("Duet response: ",response)
+    # print("Duet response: ",response)
 
     # Check for a few things 
     # import ipdb; ipdb.set_trace()

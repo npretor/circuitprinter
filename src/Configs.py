@@ -1,3 +1,7 @@
+"""
+All units are millimeters unless otherwise specified
+"""
+
 from dataclasses import dataclass
 
 @dataclass 
@@ -9,7 +13,8 @@ class Camera:
     
     focus_distance: float 
     pixels_per_millimeter: float 
-
+    usable_area: tuple 
+ 
 
 @dataclass 
 class Lights:
