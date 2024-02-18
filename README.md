@@ -23,3 +23,10 @@ sudo python3 MotionClientZMQ.py
 ```
 python3 app.py 
 ```
+
+
+
+### Camera testing 
+1. Start the motion server. This connects to the motion, and initializes the camera client 
+2. Run the test workflow script. Images should be saved to the cache folder 
+3. Test sending, images should be received and saved, but that hasn't been written yet 

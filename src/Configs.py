@@ -12,6 +12,7 @@ class Camera:
     shutter_speed: float 
     
     focus_distance: float 
+    focuz_z_location: float
     pixels_per_millimeter: float 
     usable_area: tuple 
  
@@ -30,9 +31,14 @@ class MatrixDeviceLayout:
         self.separation = separation    # Center to center 
         self.width = width              # Device width 
 
-    def generate():
+    def generate(self):
         scan_locations = []
         return scan_locations
+
+    def mock_generate(self):
+        return [
+            [50,50],[50,100],[100,50], [100,100]
+        ]
 
 
 class ArbitraryLayout:
