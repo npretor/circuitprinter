@@ -13,17 +13,21 @@
 
 3. Install docker container 
 * Running jetpack 4.6
-    * This works
+    * This works to start 
     ```
     sudo docker run --runtime nvidia -it --rm --network=host dustynv/opencv:dustynv/opencv:r32.7.1
     ```
-    Getting the camera to work (imx477) 
+
+    ### Getting the camera to work (imx477) 
     ```
     sudo docker run --runtime nvidia -it --rm --network=host -v /tmp/argus_socket:/tmp/argus_socket dustynv/opencv:r32.7.1 
     pip3 install nanocamera 
     python3 
     >>> import nanocamera as nano 
     >>> camera = nano.Camera(width=3840, height=2160)
-    frame = camera.read() 
+    >>> frame = camera.read() 
     ```
 
+
+    ### Getting the gpio accessable in the container 
+    
