@@ -20,13 +20,14 @@ class MotionServer:
     """
     Accepts incoming JSON strings and parses them 
     """
-    def __init__(self, serial_port='/dev/ttyACM0', host='*', port='5678') -> None:
+    def __init__(self, serial_port='/dev/ttyACM0', host='*', port='5678', camera_client_name="Nathans-MacBook-Pro.local") -> None:
         self.serial_port = serial_port
         self.host = host
         self.port = port 
+        self.camera_client_name = camera_client_name
         self.test_mode = None
         self.motion = MotionController(serial_port=self.serial_port) 
-        self.camera = CameraServer("tcp://192.168.4.32:5555")
+        self.camera = CameraServer(f"tcp://{camera_client_name}:5555")
 
 
     def processCommand(self, incoming):
@@ -37,12 +38,13 @@ class MotionServer:
             return {"res": False} 
 
         if "gcode" in message:
-            """Send a generic command and return reply and status """
+            """Send a generic gcode command """
             res = self.motion.send(message['gcode']) 
             return {"res": res} 
 
+        # Motion HW connect 
         elif "connect" in message: 
-            """ Connect or disconnect the hardware and return status """
+            """ Connect or disconnect the hardware """
             if message['connect']:
                 try:
                     logging.info('Attempting to connect to hardware')

@@ -1,6 +1,7 @@
 # run this program on each RPi or Jetson to send a labelled image stream
 import socket
 import time
+import os
 import logging
 import imagezmq
 import nanocamera as nano 
@@ -33,6 +34,11 @@ class CameraServer:
         self.camera.release()
 
     def save_image(self, image_name):
+        
+        if self.camera == None:
+            print('Camera not started')
+            self.start_camera()
+        
         # Get image from camera 
         image = self.camera.read() 
 
@@ -46,12 +52,22 @@ class CameraServer:
         
 
     def send_one_image(self):
-        if len(image_cache) > 0:
+        if len(self.image_cache) > 0:
             image_path = self.image_cache.pop()
             
-            logging.info(f"Sending {image_path}")
-
             image = cv.imread(image_path) 
-            self.s.send_image(jetson_name, image)
+
+            logging.info(f"Sending {image_path} shape: {image.shape}")
+
+            image_name = image_path.split(os.sep)[0]
+
+            try:
+                self.s.send_image(image_name, image)
+            except:
+                logging.error(f"Could not send image {image_name}")
+                return False
+        else:
+            logging.error("Cache empty")
+            return False
 
         return True 
