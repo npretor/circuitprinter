@@ -59,6 +59,7 @@ class MotionServer:
 
         # Camera image saving and sending 
         elif "start_camera" in message:
+            logging.info("Motion server is starting camera")
             self.camera.start_camera() 
             return {"res": True} 
 

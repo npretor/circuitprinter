@@ -25,14 +25,14 @@ python3 app.py
 ```
 
 
-
 ### Camera testing 
 1. Start the motion server in the docker container. This connects to the motion, and initializes the camera client. 
     ```
-    sudo docker run --runtime nvidia -it --rm --network=host -v /tmp/argus_socket:/tmp/argus_socket -v ~/github/circuitprinter/:/home/circuitprinter/ dustynv/opencv:r32.7.1
+    sudo docker run --runtime nvidia -it --rm --network=host -v /tmp/argus_socket:/tmp/argus_socket -v ~/github/circuitprinter/:/home/circuitprinter/ -v /dev/ttyACM0:/dev/ttyACM0 dustynv/opencv:r32.7.1
+    cd home/circuitprinter/
     source venv/bin/activate
-    pip3 install setuptools packaging pyzmq pyserial imagezmq nanocamera
-    cd home/circuitprinter/src/hardware/
+    pip3 install setuptools packaging pyzmq pyserial imagezmq nanocamera 
+    cd src/hardware/
     python3 MotionServerZMQ.py 
     ```
 2. Run the test workflow script in another script in the container. Images should be saved to the cache folder 
