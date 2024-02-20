@@ -43,9 +43,11 @@ class MotionClient:
         return self.send(json.dumps({'stop_camera': True}))             
 
     def save_image(self, image_name):
+        """This should save an image on the server side, to be retrieved later"""
         return self.send(json.dumps({'save_image': image_name})) 
 
-    def retrieve_image(self):
+    def send_image(self):
+        """ Send an image to the zmq client"""
         return self.send(json.dumps({'send_one_image': True})) 
 
     def cache_status(self):
