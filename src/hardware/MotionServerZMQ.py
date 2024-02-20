@@ -10,6 +10,7 @@ import json
 import zmq
 import sys 
 from MotionController import MotionController 
+from CameraServer import CameraServer
 
 
 logging.basicConfig(level=logging.INFO)
@@ -25,6 +26,7 @@ class MotionServer:
         self.port = port 
         self.test_mode = None
         self.motion = MotionController(serial_port=self.serial_port) 
+        self.camera = CameraServer("tcp://192.168.4.32:5555")
 
 
     def processCommand(self, incoming):
@@ -53,6 +55,27 @@ class MotionServer:
                 self.motion.disconnect()
                 return {"res": True} 
 
+        # Camera image saving and sending 
+        elif "start_camera" in message:
+            self.camera.start_camera() 
+            return {"res": True} 
+
+        elif "stop_camera" in message:
+            self.camera.stop_camera() 
+            return {"res": True} 
+
+        elif "save_image" in message:
+            image_name = message["save_image"] 
+            status = self.camera.save_image(image_name) 
+            return {"res": status} 
+
+        elif "send_one_image" in message:            
+            status = self.camera.send_one_image()
+            return {"res": True} 
+
+        elif "cache_status" in message:
+            return {"res": len(self.camera.image_cache)} 
+
         else:
             logging.error("Could not parse message") 
             return {"res": False} 
@@ -74,6 +97,7 @@ class MotionServer:
         logging.info('Socket created at %s %s', self.host, self.port)
         while True: 
             rcvdData = socket.recv().decode('utf-8') 
+
             if len(rcvdData) > 1:
                 processed_result = self.processCommand(rcvdData)
                 message = json.dumps(processed_result).encode()

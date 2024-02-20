@@ -2,25 +2,26 @@
 All units are millimeters unless otherwise specified
 """
 
-from dataclasses import dataclass
+# from dataclasses import dataclass
 
-@dataclass 
-class Camera:
-    """Camera settings"""
-    name: str 
-    exposure: float 
-    shutter_speed: float 
+# @dataclass 
+# class Camera:
+#     """Camera settings"""
+#     name: str 
+#     exposure: float 
+#     shutter_speed: float 
     
-    focus_distance: float 
-    pixels_per_millimeter: float 
-    usable_area: tuple 
+#     focus_distance: float 
+#     focuz_z_location: float
+#     pixels_per_millimeter: float 
+#     usable_area: tuple 
  
 
-@dataclass 
-class Lights:
-    """Light settings"""
-    side_lights_on: bool = True 
-    ring_light_on: bool = False 
+# @dataclass 
+# class Lights:
+#     """Light settings"""
+#     side_lights_on: bool = True 
+#     ring_light_on: bool = False 
 
 
 
@@ -30,9 +31,14 @@ class MatrixDeviceLayout:
         self.separation = separation    # Center to center 
         self.width = width              # Device width 
 
-    def generate():
+    def generate(self):
         scan_locations = []
         return scan_locations
+
+    def mock_generate(self):
+        return [
+            [50,50],[50,100],[100,50], [100,100]
+        ]
 
 
 class ArbitraryLayout:

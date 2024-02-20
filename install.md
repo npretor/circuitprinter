@@ -13,10 +13,6 @@
 
 3. Install docker container 
 * Running jetpack 4.6
-    * This works to start 
-    ```
-    sudo docker run --runtime nvidia -it --rm --network=host dustynv/opencv:dustynv/opencv:r32.7.1
-    ```
 
     ### Getting the camera to work (imx477) 
     ```
@@ -30,4 +26,17 @@
 
 
     ### Getting the gpio accessable in the container 
+
+    ### 
+    Running the image server 
+    ```
+    sudo docker run --runtime nvidia -it --rm --network=host -v /tmp/argus_socket:/tmp/argus_socket -v ~/github/circuitprinter/:/home/circuitprinter/ dustynv/opencv:r32.7.1 
+    ```
     
+# Startup 
+1. Start the motion server 
+```
+cd src/hardware/
+python3 MotionServerZMQ.py
+```
+2. 

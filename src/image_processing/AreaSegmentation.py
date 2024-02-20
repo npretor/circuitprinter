@@ -1,4 +1,3 @@
-import shapely
 import numpy as np
 
 def simple_segment( 
