@@ -3,36 +3,34 @@ For each device
     1. Get coordinates of bounding box
     2. Subdivide 
 
-"""
-"""
 Setup 
 Scan 
 Stitch (if needed)
 Image preprocessing
 Image comparison 
 """
-
 import os 
 import time 
+import json 
 import uuid 
 import logging 
 
-import cv2
+import cv2 as cv
 import imagezmq
-
 
 from hardware.MotionClientZMQ import MotionClient
 from Configs import MatrixDeviceLayout
 # from image_procesing.AreaSegmentation import simple_segment
 
+
 logging.basicConfig(level=logging.INFO) 
 
+
 class Project:
-    def __init__(self, str: name):
+    def __init__(self, name):
         self.name = name 
         
-    def setup(list: steps, str: root_dir):
-
+    def setup(self, steps, root_dir):
         imagefolder_root_path = os.path.join(root_dir, self.name)
 
         try:
@@ -53,8 +51,8 @@ class Project:
         return True
 
 
-project = Project('first_scan_project')
-project.setup('test3', ['segments', 'stitched'], root_dir="../data")
+# project = Project('first_scan_project')
+# project.setup(['segments', 'stitched'], root_dir="../data")
 
 m_layout = MatrixDeviceLayout(2,2)
 
@@ -70,12 +68,13 @@ class Scan:
         self.motion = None 
         self.image_client = None 
 
-    def start_hardware(self, address='127.0.0.1'):
+    def start_hardware(self):
         """Will need to send the ip address of the host motion system later"""
-        self.motion = MotionClient() 
+        self.motion = MotionClient(serial_port='/dev/ttyACM0', address='192.168.4.43') 
 
         try:
             self.motion.connect(test_mode=False) 
+            logging.info("connected to motion")
             return True 
         except: 
             return False 
@@ -90,31 +89,39 @@ class Scan:
         logging.info("Initializing")
         # motion.gcode(f"G1 X{} Y{} Z{} F5000 ") 
 
+        logging.info('starting camera')
         self.motion.start_camera()
         time.sleep(5)
+        print('camera started')
+
         self.image_client = imagezmq.ImageHub() 
 
-        for i, location in enumerate(self.scan_locations):            
-            print(location) 
+        for i, location in enumerate(self.scan_locations): 
+            print("location:",location) 
             print('saving image', i)
             self.motion.save_image(f"{i}.jpg")
+            time.sleep(1)
 
-    def retrieve_images():
-        n_cached_images = self.motion.cache_status['cache_status']
+    def download_images(self, download_folder='.'):
+        n_cached_images = json.loads(self.motion.cache_status())['res']
+        print(n_cached_images)
+
         for n in range(n_cached_images):
             logging.info(f"Downloading image {n} of {n_cached_images}") 
 
             self.motion.send_image() 
-            name, image = self.image_client.recv_image() 
-            cv.imwrite(rpi_name, image) 
-            image_hub.send_reply(b'OK') 
+
+            # Put all this into a thread 
+            image_name, image = self.image_client.recv_image() 
+            cv.imwrite(os.path.joint(download_folder,image_name), image) 
+            self.image_hub.send_reply(b'OK') 
 
         
-    def finish():
+    def finish(self):
         """Shutdown camera and disconnect from motion controller"""
         self.motion.stop_camera() 
         self.motion.disconnect()
-
+ 
 
 if __name__ == "__main__":
     """
@@ -125,8 +132,12 @@ if __name__ == "__main__":
         a. Have each image separated by projectName_deviceNum_segmentNum FirstScan_1_1.jpg, FirstScan_1_2.jpg
     5. Process the images 
     """
+    # import ipdb; ipdb.set_trace()
     scanner = Scan() 
     scanner.start_hardware()
+
+    print('hardware started')
     scanner.start_scanning() 
-    scanner.retrieve_images()
+
+    scanner.download_images('./data')
     scanner.finish() 
