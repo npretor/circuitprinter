@@ -20,6 +20,7 @@ class MotionClient:
         """
         Initialize and bind to address and port. 
         TODO : Get the serial port setup working, it's broken right now and the port changes 
+        Address: address of the computer receiving the motion commands(rpi or jetson)
         """
         self.serial_port = serial_port 
         context = zmq.Context()

@@ -20,6 +20,7 @@ import cv2 as cv
 import imagezmq
 
 from hardware.MotionClientZMQ import MotionClient
+from hardware.CameraClient import CameraClient
 from Configs import MatrixDeviceLayout
 # from image_procesing.AreaSegmentation import simple_segment
 
@@ -96,7 +97,8 @@ class Scan:
 
     def start_hardware(self):
         """Will need to send the ip address of the host motion system later"""
-        self.motion = MotionClient(serial_port='/dev/ttyACM0', address='192.168.4.43') 
+        # Address is the address of the jetson
+        self.motion = MotionClient(serial_port='/dev/ttyACM0', address='192.168.1.100') 
 
         try:
             self.motion.connect(test_mode=False) 
@@ -120,7 +122,7 @@ class Scan:
         time.sleep(5)
         print('camera started')
 
-        self.image_client = imagezmq.ImageHub() 
+        # self.image_client = imagezmq.ImageHub() 
 
         for i, location in enumerate(self.scan_locations): 
             print("location:",location) 
@@ -138,9 +140,9 @@ class Scan:
             self.motion.send_image() 
 
             # Put all this into a thread 
-            image_name, image = self.image_client.recv_image() 
-            cv.imwrite(os.path.joint(download_folder,image_name), image) 
-            self.image_hub.send_reply(b'OK') 
+            # image_name, image = self.image_client.recv_image() 
+            # cv.imwrite(os.path.joint(download_folder,image_name), image) 
+            # self.image_hub.send_reply(b'OK') 
 
         
     def finish(self):
@@ -165,15 +167,16 @@ if __name__ == "__main__":
     workflow_folder = myproject.setup(['segments', 'stitched']) 
 
     # Start scanning 
-    # scanner = Scan() 
-    # scanner.start_hardware()
+    scanner = Scan() 
+    scanner.start_hardware()
+    print('hardware started')
+    scanner.start_scanning() 
 
-    # print('hardware started')
+    stitch_folder = os.path.join(workflow_folder, steps[0])
 
-    # scanner.start_scanning() 
+    cam = CameraClient()
+    cam.start()
 
-    # stitch_folder = os.path.join(workflow_folder, steps[0])
-
-    # scanner.download_images(stitch_folder) 
-
-    # scanner.finish() 
+    scanner.download_images(stitch_folder) 
+    scanner.finish() 
+    cam.stop()
