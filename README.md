@@ -31,7 +31,7 @@ python3 app.py
     sudo docker run --runtime nvidia -it --rm --network=host -v /tmp/argus_socket:/tmp/argus_socket -v ~/github/circuitprinter/:/home/circuitprinter/ -v /dev/ttyACM0:/dev/ttyACM0 dustynv/opencv:r32.7.1
     cd home/circuitprinter/
     source venv/bin/activate
-    pip3 install setuptools packaging pyzmq pyserial imagezmq nanocamera 
+    pip3 install pyzmq pyserial imagezmq nanocamera 
     cd src/hardware/
     python3 MotionServerZMQ.py 
     ```

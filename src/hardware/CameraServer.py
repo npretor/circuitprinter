@@ -14,9 +14,9 @@ class CameraServer:
     """
 
     """
-    def __init__(self, receiver_address = 'tcp://127.0.0.1:5555'):
+    def __init__(self, receiver_address='127.0.0.1'):
         self.receiver_address = receiver_address
-        self.s = imagezmq.ImageSender(connect_to=self.receiver_address) 
+        self.s = imagezmq.ImageSender(connect_to=f"tcp://{self.receiver_address}:5555" ) 
 
         self.image_cache = []
         self.camera = None 
@@ -62,6 +62,7 @@ class CameraServer:
             image_name = image_path.split(os.sep)[0]
 
             try:
+                import ipdb;ipdb.set_trace()
                 self.s.send_image(image_name, image)
             except:
                 logging.error(f"Could not send image {image_name}")

@@ -20,14 +20,14 @@ class MotionServer:
     """
     Accepts incoming JSON strings and parses them 
     """
-    def __init__(self, serial_port='/dev/ttyACM0', host='*', port='5678', camera_client_name="Nathans-MacBook-Pro.local") -> None:
+    def __init__(self, serial_port='/dev/ttyACM0', host='*', port='5678', camera_client_address="192.168.4.32") -> None:
         self.serial_port = serial_port
         self.host = host
         self.port = port 
-        self.camera_client_name = camera_client_name
+        self.camera_client_address = camera_client_address
         self.test_mode = None
         self.motion = MotionController(serial_port=self.serial_port) 
-        self.camera = CameraServer(f"tcp://{camera_client_name}:5555")
+        self.camera = CameraServer(camera_client_address)
 
 
     def processCommand(self, incoming):
