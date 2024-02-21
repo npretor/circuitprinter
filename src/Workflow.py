@@ -39,7 +39,7 @@ class Project:
     def __init__(self, name):
         self.name = name 
         
-    def setup(self, steps, root_dir):
+    def setup(self, steps, root_dir='./data'):
 
         # Root folder ./ProjectName
         project_root_path = os.path.join(root_dir, self.name)
@@ -75,12 +75,10 @@ class Project:
                 os.mkdir(workflow_step_folder) 
             except:
                 print('error creating:',workflow_step_folder)
-                
-        return True
+    
+        # Return the current workflow location 
+        return os.path.join(project_root_path, workflow_folder) 
 
-
-# project = Project('first_scan_project')
-# project.setup(['segments', 'stitched'], root_dir="../data")
 
 m_layout = MatrixDeviceLayout(2,2)
 
@@ -160,21 +158,22 @@ if __name__ == "__main__":
         a. Have each image separated by projectName_deviceNum_segmentNum FirstScan_1_1.jpg, FirstScan_1_2.jpg
     5. Process the images 
     """
-    # import ipdb; ipdb.set_trace()
+
     # Setup project 
-    # If project exists, 
-
     myproject = Project("StitchDemo")
-    myproject.setup(['segments', 'stitched'], 'data')
+    steps = ['segments', 'stitched']
+    workflow_folder = myproject.setup(['segments', 'stitched']) 
 
-
-    
+    # Start scanning 
     # scanner = Scan() 
     # scanner.start_hardware()
 
     # print('hardware started')
+
     # scanner.start_scanning() 
 
-    # scanner.download_images('./data')
+    # stitch_folder = os.path.join(workflow_folder, steps[0])
+
+    # scanner.download_images(stitch_folder) 
 
     # scanner.finish() 
