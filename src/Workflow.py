@@ -14,6 +14,7 @@ import time
 import json 
 import uuid 
 import logging 
+import glob
 
 import cv2 as cv
 import imagezmq
@@ -27,27 +28,54 @@ logging.basicConfig(level=logging.INFO)
 
 
 class Project:
+    """
+    Projects have the following structures: 
+    Projectname
+        WorkflowRun_1   
+            1_StepName
+            2_StepName
+            3_StepName
+    """
     def __init__(self, name):
         self.name = name 
         
     def setup(self, steps, root_dir):
-        imagefolder_root_path = os.path.join(root_dir, self.name)
 
-        try:
-            os.mkdir(imagefolder_root_path) 
-        except:
-            return False
+        # Root folder ./ProjectName
+        project_root_path = os.path.join(root_dir, self.name)
+        if not os.path.exists(project_root_path):
+            try:
+                os.mkdir(project_root_path) 
+            except:
+                logging.error("Could not make root image folder")
 
+        # WorkflowFolder_{n}
+        workflow_folders = glob.glob(os.path.join(project_root_path, 'WorkflowRun_*'))
+        if len(workflow_folders) == 0:
+            # Create a folder 
+            os.mkdir(os.path.join(project_root_path, 'WorkflowRun_1')) 
+            workflow_folder = "WorkflowRun_1"
+        else: 
+            # Sort the folders, get the one with the highest number
+            # Get the number
+            workflow_number = int(sorted(workflow_folders)[-1].split(os.sep)[-1].split('_')[-1]) 
+
+            # Create a folder with WorkflowFolder_{n+1}
+            workflow_number+=1
+
+            workflow_folder =  f"WorkflowRun_{workflow_number}"
+            os.mkdir(os.path.join(project_root_path, workflow_folder)) 
+
+        # Create 
         for i, step_name in enumerate(steps):
 
-            workflow_step_folder = os.path.join(imagefolder_root_path, str(i)+'_'+step_name)
+            workflow_step_folder = os.path.join(project_root_path, workflow_folder, str(i)+'_'+step_name)
 
             try:
                 os.mkdir(workflow_step_folder) 
             except:
                 print('error creating:',workflow_step_folder)
-                return False
-        
+                
         return True
 
 
@@ -133,11 +161,20 @@ if __name__ == "__main__":
     5. Process the images 
     """
     # import ipdb; ipdb.set_trace()
-    scanner = Scan() 
-    scanner.start_hardware()
+    # Setup project 
+    # If project exists, 
 
-    print('hardware started')
-    scanner.start_scanning() 
+    myproject = Project("StitchDemo")
+    myproject.setup(['segments', 'stitched'], 'data')
 
-    scanner.download_images('./data')
-    scanner.finish() 
+
+    
+    # scanner = Scan() 
+    # scanner.start_hardware()
+
+    # print('hardware started')
+    # scanner.start_scanning() 
+
+    # scanner.download_images('./data')
+
+    # scanner.finish() 
