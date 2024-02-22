@@ -26,6 +26,7 @@ class MotionClient:
         context = zmq.Context()
         self.socket = context.socket(zmq.REQ)
         self.socket.connect("tcp://{}:{}".format(address, socket_port))  
+        self.image_save_folder = '.'
 
     def send(self, message):
         """Core socket send-receive functionality"""
@@ -47,9 +48,9 @@ class MotionClient:
         """This should save an image on the server side, to be retrieved later"""
         return self.send(json.dumps({'save_image': image_name})) 
 
-    def send_image(self):
+    def send_image(self, image_folder):
         """ Send an image to the zmq client"""
-        return self.send(json.dumps({'send_one_image': True})) 
+        return self.send(json.dumps({'send_one_image': image_folder})) 
 
     def cache_status(self):
         return self.send(json.dumps({'cache_status': True})) 

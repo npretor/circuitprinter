@@ -15,12 +15,13 @@ import json
 import uuid 
 import logging 
 import glob
+import subprocess
 
 import cv2 as cv
 import imagezmq
 
 from hardware.MotionClientZMQ import MotionClient
-from hardware.CameraClient import CameraClient
+# from hardware.CameraClient import CameraClient
 from Configs import MatrixDeviceLayout
 # from image_procesing.AreaSegmentation import simple_segment
 
@@ -94,12 +95,19 @@ class Scan:
         self.scan_locations = m_layout.mock_generate() 
         self.motion = None 
         self.image_client = None 
+        self.camera_process = None 
+        
 
     def start_hardware(self):
         """Will need to send the ip address of the host motion system later"""
         # Address is the address of the jetson
-        self.motion = MotionClient(serial_port='/dev/ttyACM0', address='192.168.1.100') 
+        self.motion = MotionClient(serial_port='/dev/ttyACM0', address='192.168.4.43') 
+        
+        # Start the image server 
+        self.camera_process = subprocess.Popen(['python3', './hardware/CameraClient.py'], stdout=subprocess.PIPE) 
 
+        time.sleep(5)
+        print('camera client started')
         try:
             self.motion.connect(test_mode=False) 
             logging.info("connected to motion")
@@ -107,7 +115,7 @@ class Scan:
         except: 
             return False 
 
-    def start_scanning(self):
+    def start_scanning(self, image_folder):
         """
 
         """
@@ -122,29 +130,31 @@ class Scan:
         time.sleep(5)
         print('camera started')
 
-        # self.image_client = imagezmq.ImageHub() 
-
         for i, location in enumerate(self.scan_locations): 
             print("location:",location) 
             print('saving image', i)
-            self.motion.save_image(f"{i}.jpg")
+            self.motion.save_image(f"{i}.jpg") 
             time.sleep(1)
 
-    def download_images(self, download_folder='.'):
+    def download_images(self, download_folder):
         n_cached_images = json.loads(self.motion.cache_status())['res']
-        print(n_cached_images)
+        print(f"{n_cached_images} cached images")
 
         for n in range(n_cached_images):
-            logging.info(f"Downloading image {n} of {n_cached_images}") 
 
-            self.motion.send_image() 
+            logging.info(f"Downloading image {n} of {n_cached_images}") 
+            # self.motion.image_save_folder = download_folder
+            self.motion.send_image(download_folder) 
 
             # Put all this into a thread 
             # image_name, image = self.image_client.recv_image() 
             # cv.imwrite(os.path.joint(download_folder,image_name), image) 
             # self.image_hub.send_reply(b'OK') 
 
-        
+        time.sleep(1)
+        self.camera_process.terminate()
+
+
     def finish(self):
         """Shutdown camera and disconnect from motion controller"""
         self.motion.stop_camera() 
@@ -170,13 +180,13 @@ if __name__ == "__main__":
     scanner = Scan() 
     scanner.start_hardware()
     print('hardware started')
-    scanner.start_scanning() 
+    scanner.start_scanning(os.path.join(workflow_folder, "0_segments")) 
 
     stitch_folder = os.path.join(workflow_folder, steps[0])
 
-    cam = CameraClient()
-    cam.start()
+    # cam = CameraClient()
+    # cam.start()
 
-    scanner.download_images(stitch_folder) 
+    scanner.download_images(os.path.join(workflow_folder, "0_segments")) 
     scanner.finish() 
-    cam.stop()
+    # cam.stop()
