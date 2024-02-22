@@ -73,7 +73,7 @@ class MotionServer:
             return {"res": status} 
 
         elif "send_one_image" in message:            
-            status = self.camera.send_one_image()
+            status = self.camera.send_one_image(message["send_one_image"])
             return {"res": True} 
 
         elif "cache_status" in message:

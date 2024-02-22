@@ -43,7 +43,7 @@ class CameraServer:
         image = self.camera.read() 
 
         # Save image 
-        cv.imwrite(image_name, image) 
+        cv.imwrite(os.path.join( "./cache_folder", image_name), image) 
 
         logging.info(f"Saved to cache: {image_name}")
 
@@ -51,21 +51,22 @@ class CameraServer:
         self.image_cache.append(image_name)
         
 
-    def send_one_image(self):
+    def send_one_image(self, image_folder):
         if len(self.image_cache) > 0:
             image_path = self.image_cache.pop()
+
+            print('image path', image_path)
             
-            image = cv.imread(image_path) 
+            image = cv.imread(os.path.join('cache_folder',image_path)) 
 
             logging.info(f"Sending {image_path} shape: {image.shape}")
 
             image_name = image_path.split(os.sep)[0]
 
             try:
-                import ipdb;ipdb.set_trace()
-                self.s.send_image(image_name, image)
+                self.s.send_image(os.path.join(image_folder, image_name), image)
             except:
-                logging.error(f"Could not send image {image_name}")
+                logging.error(f"Could not send image {image_folder} {image_name}")
                 return False
         else:
             logging.error("Cache empty")
