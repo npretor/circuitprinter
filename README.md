@@ -44,3 +44,15 @@ python3 app.py
     python3 Workflow.py 
     ```
 3. Test sending, images should be received and saved, but that hasn't been written yet. 
+
+
+# Next steps
+- Ignore stitching for now 
+- Impliment as many features as possible: 
+    - Compare design with scan, highlight top 3 issues 
+    - Use segment anything 
+    - Query the image with mistral? 
+    - Find shorts and breaks 
+        - Short and break strategy 
+    - Create a way to draw on images and correlate with pixels 
+        - Define points to watch the width of 
