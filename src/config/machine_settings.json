@@ -30,7 +30,10 @@
     "print_height":         0.050,
     "print_speed":          500,
     "substrate_height":     0.050,
-    "z_probe_pin":          2,
-    "light_control_pin":    19,
+    
+    "z_probe_pin":          12,
+    "light_control_pin":    25,
+    "pnp_solenoid_pin":     23,
+    "pnp_pump_pin":         24,
     "units": "mm"
 } 

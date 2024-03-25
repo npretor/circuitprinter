@@ -3,12 +3,12 @@ import logging
 import os
 import time 
 from platform import machine 
-#from hardware.MotionController import MotionController
 from hardware.MotionClientZMQ import MotionClient
-from hardware.LightController import LightController
+from hardware.PinController import PinController
 from ArtworkParser import ArtworkParser
-import gpiozero 
-from gpiozero import Button 
+
+import Jetson.GPIO as GPIO
+
 
 class Printer:
     def __init__(self):
@@ -18,19 +18,21 @@ class Printer:
         self.current_job = None
         self.currentToolNum = None
 
-
-
         self.process_recipes = None
         self.machine_settings = None 
 
-        with open('../config/process_recipes.json','r') as f:
+        with open('config/process_recipes.json','r') as f:
             self.process_recipes = json.load(f) 
 
-        with open('../config/machine_settings.json','r') as f:
+        with open('config/machine_settings.json','r') as f:
             self.machine_settings = json.load(f) 
 
-        self.probe = Button(self.machine_settings['z_probe_pin'])  
-        self.side_lights = LightController(self.machine_settings['light_control_pin'])
+        # Z probe setup 
+        GPIO.setmode(GPIO.BCM)  # BCM pin-numbering scheme from Raspberry Pi
+        GPIO.setup(self.machine_settings['z_probe_pin'], GPIO.IN) 
+        self.probe_is_pressed = False 
+
+        self.side_lights = PinController(self.machine_settings['light_control_pin']) 
 
         self.toolConfigs = {
             'tools': {
@@ -66,7 +68,7 @@ class Printer:
             return True 
         except: 
             return False 
-        
+
     def disconnect(self):
         try:
             self.motion.close() 
@@ -93,6 +95,9 @@ class Printer:
         bed - probe = 6.3 - -3.2
         delta is: +9.50
         """
+
+        def set_probe(channel):
+            self.probe_is_pressed = True 
 
         # Move to a probe location 
 
@@ -122,12 +127,16 @@ class Printer:
         self.motion.gcode('G1 Z-5')
 
         # Send motion commands as long as a bump is not detected 
+        # Start probe 
+        GPIO.add_event_detect(self.machine_settings['z_probe_pin'], GPIO.FALLING, callback=set_probe, bouncetime=10, polltime=0.050)  
+
         while True:
-            if self.probe.is_pressed:
+            if self.probe_is_pressed:
+                self.probe_is_pressed = False
                 break 
             else:
                 self.motion.gcode('G1 Z-0.050 F500') 
-                time.sleep(0.2) 
+                time.sleep(0.1) 
         
         # Save and print position
         position = self.motion.position() 
@@ -400,3 +409,13 @@ class Tool:
 
 
 #paste_extruder = Tool("paste_extruder v1 homemade", "paste_extruder") 
+
+if __name__ == "__main__":
+    printer = Printer() 
+    printer.connect() 
+
+    printer.side_lights.on() 
+    # printer.piezoProbe(tool_number=3) 
+    time.sleep(10)
+    printer.side_lights.off() 
+    printer.side_lights.close() 
